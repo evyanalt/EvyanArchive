@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>⚠️ CORE_MELTDOWN_INIT ⚠️</title>
+    <style>
+        body { background: #000; margin: 0; overflow: hidden; }
+        .blur-layer {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            backdrop-filter: blur(20px); /* This is the GPU's nightmare */
+            pointer-events: none; z-index: 10;
+        }
+        #swarm-container { transform-style: preserve-3d; perspective: 800px; }
+    </style>
+</head>
+<body>
+    <div class="blur-layer"></div>
+    <div id="swarm-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>

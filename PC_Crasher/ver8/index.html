@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>not my fault you don't have a nasa pc :)</title>
+    <style>
+        body { background: #000; margin: 0; overflow: hidden; filter: url(#chromatic); }
+        canvas { position: fixed; top: 0; left: 0; }
+        #stats { position: fixed; bottom: 10px; right: 10px; color: #0f0; font-family: monospace; z-index: 1000; background: rgba(0,0,0,0.8); }
+    </style>
+</head>
+<body>
+    <svg style="display:none">
+        <filter id="chromatic">
+            <feColorMatrix type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="r"></feColorMatrix>
+            <feOffset in="r" dx="2" dy="0" result="r"></feOffset>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="g"></feColorMatrix>
+            <feOffset in="g" dx="-2" dy="0" result="g"></feOffset>
+            <feBlend in="r" in2="g" mode="screen"></feBlend>
+        </filter>
+    </svg>
+    <div id="stats">MEM_SINK: ACTIVE</div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Crasher Versions</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+    h1, h2 {
+      margin: 0 0 16px;
+      color: #f8fafc;
+    }
+    header {
+      padding: 24px 0 32px;
+      border-bottom: 1px solid rgba(148, 163, 184, .16);
+    }
+    .version-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      margin-top: 24px;
+    }
+    .version-card {
+      background: rgba(15, 23, 42, .9);
+      border: 1px solid rgba(148, 163, 184, .1);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, .25);
+    }
+    .version-card h3 {
+      margin: 0 0 12px;
+      color: #38bdf8;
+    }
+    .version-card p {
+      margin: 0 0 12px;
+    }
+    .metrics {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 0;
+    }
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      font-size: .95rem;
+      color: #cbd5e1;
+    }
+    .metric span:first-child {
+      color: #94a3b8;
+    }
+    .link-button {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      font-size: .95rem;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .link-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .note {
+      margin-top: 8px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.04);
+      border-radius: 12px;
+      color: #e2e8f0;
+      font-size: .95rem;
+    }
+    .note em {
+      font-style: italic;
+      color: #f8fafc;
+    }
+    footer {
+      margin-top: 42px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(148, 163, 184, .16);
+      color: #94a3b8;
+      font-size: .94rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>PC Crasher Versions</h1>
+      <p>Compiled from the project note file. Each card below represents one version with its description and available chaos metrics.</p>
+    </header>
+
+    <div class="version-grid">
+      <article class="version-card" id="version-1">
+        <h3>Version 1</h3>
+        <p><em>too lazy to type this yet</em></p>
+        <a href="ver1/index.html" class="link-button">Open version 1</a>
+      </article>
+
+      <article class="version-card" id="version-2">
+        <h3>Version 2</h3>
+        <p><em>still too lazy</em></p>
+        <a href="ver2/index.html" class="link-button">Open version 2</a>
+      </article>
+
+      <article class="version-card" id="version-3">
+        <h3>Version 3</h3>
+        <p><em>Pretty chaos in the console</em></p>
+        <a href="ver3/index.html" class="link-button">Open version 3</a>
+      </article>
+
+      <article class="version-card" id="version-4">
+        <h3>Version 4</h3>
+        <p><em>Straight up screensaver, both console and page</em></p>
+        <a href="ver4/index.html" class="link-button">Open version 4</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>83%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>37%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-5">
+        <h3>Version 5</h3>
+        <p><em>The void is eating the errors</em></p>
+        <a href="ver5/index.html" class="link-button">Open version 5</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>99%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>45%</strong></div>
+        </div>
+        <div class="note"><em>"bruh i just noticed the title"</em></div>
+      </article>
+
+      <article class="version-card" id="version-6">
+        <h3>Version 6</h3>
+        <p><em>Maybe a little much? nah</em></p>
+        <a href="ver6/index.html" class="link-button">Open version 6</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>116%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>98%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-7">
+        <h3>Version 7</h3>
+        <p><em>My music is not playing anymore</em></p>
+        <a href="ver7/index.html" class="link-button">Open version 7</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>404%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>99%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-8">
+        <h3>Version 8</h3>
+        <p><em>This is fine. No seriously this is less heavy then the previous version</em></p>
+        <a href="ver8/index.html" class="link-button">Open version 8</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>135%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>45%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-9">
+        <h3>Version 9</h3>
+        <p><em>Going on the gpu now 🔥</em></p>
+        <a href="ver9/index.html" class="link-button">Open version 9</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>267%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>99%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-10">
+        <h3>Version 10</h3>
+        <p><em>Still not enough chaos. epilepsy speedrun</em></p>
+        <a href="ver10/index.html" class="link-button">Open version 10</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>110%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>103%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-11">
+        <h3>Version 11</h3>
+        <p><em>Yeah this is almost the space heater mode. Multiple freezes occurred, most on load. Also win95 style ui appeared bc firefox and vs code crashed, this is the memory breaker!</em></p>
+        <a href="ver11/index.html" class="link-button">Open version 11</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>312%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>112%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>45%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-12">
+        <h3>Version 12</h3>
+        <p><em>A little less</em></p>
+        <a href="ver12/index.html" class="link-button">Open version 12</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>90%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>130%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>40%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-13">
+        <h3>Version 13</h3>
+        <p><em>Even less, but that could be because it errored</em></p>
+        <a href="ver13/index.html" class="link-button">Open version 13</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>1%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>96%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>97%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-14">
+        <h3>Version 14</h3>
+        <p><em>They keep getting more simple</em></p>
+        <a href="ver14/index.html" class="link-button">Open version 14</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>98%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>238%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>95%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-15">
+        <h3>Version 15</h3>
+        <p><em>Webgl only, firefox just straight up gave up. chrome worked, but still low usage</em></p>
+        <a href="ver15/index.html" class="link-button">Open version 15</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>1%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>147%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>100%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-16">
+        <h3>Version 16</h3>
+        <p><em>Better, but just cpu</em></p>
+        <a href="ver16/index.html" class="link-button">Open version 16</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>1%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>68%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>87%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-17">
+        <h3>Version 17</h3>
+        <p><em>literally nothing</em></p>
+        <a href="ver17/index.html" class="link-button">Open version 17</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>3%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>0%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>100%</strong></div>
+        </div>
+      </article>
+
+      <article class="version-card" id="version-18">
+        <h3>Version 18</h3>
+        <p><em>yeah this is crazy</em></p>
+        <a href="ver18/index.html" class="link-button">Open version 18</a>
+        <div class="metrics">
+          <div class="metric"><span>Chaos level (console)</span><strong>100%</strong></div>
+          <div class="metric"><span>Chaos level (page)</span><strong>1039%</strong></div>
+          <div class="metric"><span>PC stability</span><strong>34% (slowly dropping)</strong></div>
+        </div>
+      </article>
+    </div>
+
+    <footer>
+      <p>This page uses the contents of the note file to display every version with its description and metrics.<a href="note.txt" target="_blank">note</a></p>
+    </footer>
+  </div>
+</body>
+</html>

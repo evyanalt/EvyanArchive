@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPU_MELTER_V1.EXE</title>
+    <style>
+        body { background: #000; margin: 0; overflow: hidden; perspective: 1000px; }
+        #gpu-swarm { width: 100vw; height: 100vh; transform-style: preserve-3d; }
+        .volumetric {
+            position: absolute;
+            width: 50px; height: 50px;
+            background: white;
+            /* Box-shadows are calculated on the GPU—let's make them massive */
+            box-shadow: 0 0 100px 20px cyan, 0 0 200px 40px magenta, 0 0 300px 60px yellow;
+            border-radius: 50%;
+            mix-blend-mode: color-dodge;
+        }
+    </style>
+</head>
+<body>
+    <div id="gpu-swarm"></div>
+    <script src="script.js"></script>
+</body>
+</html>

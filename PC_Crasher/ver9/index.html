@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>⚡ STUNNING_EXTINCTION ⚡</title>
+    <style>
+        body, html { background: #000; margin: 0; overflow: hidden; height: 100vh; width: 100vw; }
+        #master-root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+        .glass-shard {
+            position: absolute;
+            backdrop-filter: blur(10px) hue-rotate(90deg);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 50px rgba(0,255,255,0.5);
+            pointer-events: none;
+        }
+        canvas { position: fixed; top: 0; left: 0; mix-blend-mode: color-dodge; }
+    </style>
+</head>
+<body>
+    <div id="master-root"></div>
+    <script src="script.js"></script>
+</body>
+</html>

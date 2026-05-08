@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>REBOOTING...</title>
+    <style>
+        body { background: #000; margin: 0; overflow: hidden; color: #fff; font-family: 'Comic Sans MS', 'Wingdings', sans-serif; }
+        #glitch-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; opacity: 0.4; }
+        .data-stream { position: absolute; font-size: 10px; white-space: nowrap; animation: fall linear infinite; }
+        @keyframes fall { from { transform: translateY(-100vh); } to { transform: translateY(100vh); } }
+    </style>
+</head>
+<body>
+    <canvas id="glitch-overlay"></canvas>
+    <div id="ui-layer"></div>
+    <script src="script.js"></script>
+</body>
+</html>

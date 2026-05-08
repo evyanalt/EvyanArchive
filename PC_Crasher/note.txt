@@ -1,0 +1,79 @@
+# The one it the root is the newest version
+
+- Version 1
+too lazy to type this yet
+- Version 2
+still too lazy
+- Version 3
+Pretty chaos in the console
+- Version 4
+Straight up screensaver, both console and page
+chaos level (console) 83%
+chaos level (page) 37%
+- Version 5
+The void is eating the errors
+chaos level (console) 99%
+chaos level (page) 45%
+bruh i just noticed the title
+- Version 6
+Maybe a little much? nah
+chaos level (console) 116%
+chaos level (page) 98%
+- Version 7
+My music is not playing anymore
+chaos level (console) 404%
+chaos level (page) 99%
+- Version 8
+This is fine. No seriously this is less heavy then the previous version
+chaos level (console) 135%
+chaos level (page) 45%
+# Going into the danger zone
+- Version 9
+Going on the gpu now 🔥
+chaos level (console) 267%
+chaos level (page) 99%
+- Version 10
+Still not enough chaos. epilepsy speedrun
+chaso level (console) 110%
+chaos level (page) 103%
+- Version 11
+Yeah this is almost the space heater mode. Multiple freezes occurred, most on load. Also win95 style ui appeared bc firefox and vs code crashed, this is the memory breaker!
+chaos level (console) 312%
+chaos level (page) 112%
+pc stability 45%
+- Version 12
+A little less
+chaos level (console) 90%
+chaos level (page) 130%
+pc stability 40%
+- Version 13
+Even less, but that could be because it errored
+chaos level (console) 1%
+chaos level (page) 96%
+pc stability 97%
+- Version 14
+They keep getting more simple
+chaos level (console) 98%
+chaos level (page) 238%
+pc stability 95%
+- Version 15
+Webgl only, firefox just straight up gave up. chrome worked, but still low usage
+chaos level (console) 1%
+chaos level (page) 147%
+pc stability 100%
+- Version 16
+Better, but just cpu
+chaos level (console) 1%
+chaos level (page) 68%
+pc stability 87%
+- Version 17
+literally nothing
+chaos level (console) 3%
+chaos level (page) 0%
+pc stability 100%
+- Version 18
+yeah this is crazy
+chaos level (console) 100%
+chaos level (page) 1039%
+pc stability 34% (slowly dropping)
+# Keep in mind this is all without any html elements in the index.html that you actually see, it's all js generated.
