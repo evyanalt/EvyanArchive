@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Cozy Room</title>
+    <style>
+        :root {
+            --bg: #fdf6e3;
+            --text: #586e75;
+            --accent: #d33682;
+            --window: #b58900;
+        }
+
+        body.night {
+            --bg: #002b36;
+            --text: #839496;
+            --accent: #268bd2;
+            --window: #eee8d5;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            transition: all 0.8s ease;
+        }
+
+        #room-container {
+            position: relative;
+            white-space: pre;
+            line-height: 1.2;
+            font-size: 16px;
+            cursor: default;
+            user-select: none;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+        }
+
+        .object {
+            display: inline-block;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .object:hover {
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .window-glow {
+            color: var(--window);
+            font-weight: bold;
+            animation: flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .controls {
+            margin-top: 30px;
+            z-index: 10;
+        }
+
+        button {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--text);
+            padding: 10px 20px;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        #status {
+            margin-top: 15px;
+            font-size: 12px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div id="room-container">
+    </div>
+
+<div class="controls">
+    <button onclick="toggleNight()">TOGGLE LIGHTS</button>
+</div>
+<div id="status">Click the plants, the book, or the window...</div>
+
+<script>
+    let isNight = false;
+
+    const roomTemplate = `
+       ____________________________________________________
+      /                                                   /|
+     /      <span class="object" onclick="interact('WINDOW')">.-------.</span>                                    / |
+    /       <span class="object" onclick="interact('WINDOW')">| <span class="window-glow"># # #</span> |</span>                                   /  |
+   /        <span class="object" onclick="interact('WINDOW')">| <span class="window-glow"># # #</span> |</span>          <span class="object" onclick="interact('PLANT')">_(_)_</span>                   /   |
+  /         <span class="object" onclick="interact('WINDOW')">'-------'</span>         <span class="object" onclick="interact('PLANT')">(___  _)</span>                 /    |
+ /__________________________________<span class="object" onclick="interact('PLANT')">(_)</span>________________/     |
+ |                                                    |      |
+ |    <span class="object" onclick="interact('SHELF')">.--------------------.</span>                          |      |
+ |    <span class="object" onclick="interact('SHELF')">| [=]  [=]  <span class="object" onclick="interact('BOOK')">[BOOK]</span> |</span>                          |      /
+ |    <span class="object" onclick="interact('SHELF')">'--------------------'</span>                          |     /
+ |                                                    |    /
+ |            <span class="object" onclick="interact('TABLE')">.________________________.</span>              |   /
+ |           <span class="object" onclick="interact('TABLE')">/                        /|</span>              |  /
+ |          <span class="object" onclick="interact('TABLE')">/________________________/ |</span>              | /
+ |          <span class="object" onclick="interact('TABLE')">|          |             | |</span>              |/
+ |          <span class="object" onclick="interact('TABLE')">|          |             | /</span>              '
+ |__________|__________|_____________|/________________
+    `;
+
+    const statusMap = {
+        'WINDOW': ["The moon looks beautiful tonight.", "A bright, sunny day outside."],
+        'PLANT': ["The fern seems happy in the corner.", "You gave the plant a little water."],
+        'BOOK': ["It's a collection of mathematical proofs.", "You read a page about Fractals."],
+        'TABLE': ["A sturdy wooden desk.", "It smells like cedar wood."],
+        'SHELF': ["Full of curiosities and old disks.", "Dusty, but well-loved."]
+    };
+
+    function renderRoom() {
+        document.getElementById('room-container').innerHTML = roomTemplate;
+    }
+
+    function toggleNight() {
+        isNight = !isNight;
+        document.body.classList.toggle('night');
+        const glows = document.querySelectorAll('.window-glow');
+        glows.forEach(g => {
+            g.innerText = isNight ? "★ * ★" : "# # #";
+        });
+        document.getElementById('status').innerText = isNight ? "The stars are out." : "Good morning.";
+    }
+
+    function interact(key) {
+        const messages = statusMap[key];
+        const msg = isNight ? messages[0] : messages[1];
+        document.getElementById('status').innerText = `[${key}]: ${msg}`;
+        
+        // Add a little "pulse" effect to the clicked object
+        const event = window.event;
+        event.target.style.transition = 'none';
+        event.target.style.color = 'var(--accent)';
+        setTimeout(() => {
+            event.target.style.transition = 'color 0.5s';
+            event.target.style.color = '';
+        }, 100);
+    }
+
+    renderRoom();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Multiverse Terminal</title>
+    <style>
+        :root { --c: #00ffaa; }
+        body { background: #050505; color: var(--c); font-family: monospace; overflow: hidden; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #header { padding: 10px; border-bottom: 1px solid var(--c); display: flex; gap: 10px; background: #000; z-index: 100; }
+        #display { flex-grow: 1; display: flex; justify-content: center; align-items: center; white-space: pre; font-size: 10px; line-height: 9px; cursor: move; }
+        button { background: transparent; color: var(--c); border: 1px solid var(--c); padding: 5px 15px; cursor: pointer; font-family: inherit; font-weight: bold; }
+        button:hover { background: var(--c); color: #000; }
+        button.active { background: var(--c); color: #000; box-shadow: 0 0 10px var(--c); }
+        .stat { margin-left: auto; font-size: 12px; align-self: center; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<div id="header">
+    <button onclick="setMode('FIRE')" id="btn-FIRE">DOOM FIRE</button>
+    <button onclick="setMode('CUBE')" id="btn-CUBE">3D PROJECTION</button>
+    <button onclick="setMode('WAVE')" id="btn-WAVE">PLASMA WAVE</button>
+    <button onclick="setMode('DNA')" id="btn-DNA">BIO-HELIX</button>
+    <div class="stat">KERNEL: <span id="kernel-name">IDLE</span> | <span id="fps">0</span> FPS</div>
+</div>
+
+<div id="display"></div>
+
+<script>
+    const display = document.getElementById('display');
+    const cols = 100, rows = 50;
+    let mode = 'FIRE';
+    let time = 0;
+    
+    // Buffers
+    let firePixels = new Array(cols * rows).fill(0);
+    const chars = " .:-=+*#%@";
+
+    function setMode(m) {
+        mode = m;
+        document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + m).classList.add('active');
+        document.getElementById('kernel-name').innerText = m;
+    }
+
+    // --- MATH KERNELS ---
+
+    function renderFire() {
+        // Source of fire at the bottom
+        for(let x=0; x<cols; x++) firePixels[(rows-1)*cols + x] = Math.random() > 0.1 ? 36 : 0;
+        
+        let output = "";
+        const fireChars = " .:-+*#%@$"; // Palette
+        for(let y=0; y<rows-1; y++) {
+            for(let x=0; x<cols; x++) {
+                // Averaging neighbors for "heat spread"
+                let idx = y * cols + x;
+                let below = firePixels[idx + cols] || 0;
+                let decay = Math.floor(Math.random() * 2);
+                firePixels[idx] = Math.max(0, below - decay);
+                output += fireChars[Math.min(9, Math.floor(firePixels[idx]/4))] || " ";
+            }
+            output += "\n";
+        }
+        return output;
+    }
+
+    function renderCube() {
+        let canvas = Array(rows).fill(0).map(() => Array(cols).fill(" "));
+        time += 0.05;
+        // Vertices of a cube
+        let points = [];
+        for(let x=-1; x<=1; x+=2) for(let y=-1; y<=1; y+=2) for(let z=-1; z<=1; z+=2) points.push([x,y,z]);
+        
+        points.forEach(p => {
+            // Rotation Math
+            let x = p[0], y = p[1], z = p[2];
+            // Rotate Y
+            let x1 = x * Math.cos(time) - z * Math.sin(time);
+            let z1 = x * Math.sin(time) + z * Math.cos(time);
+            // Rotate X
+            let y2 = y * Math.cos(time*0.7) - z1 * Math.sin(time*0.7);
+            let z2 = y * Math.sin(time*0.7) + z1 * Math.cos(time*0.7);
+            
+            // Projection
+            let depth = 3;
+            let scale = 15 / (z2 + depth);
+            let px = Math.floor(cols/2 + x1 * scale * 2);
+            let py = Math.floor(rows/2 + y2 * scale);
+            
+            if(px >= 0 && px < cols && py >= 0 && py < rows) canvas[py][px] = "@";
+        });
+        return canvas.map(r => r.join("")).join("\n");
+    }
+
+    function renderWave() {
+        time += 0.1;
+        let output = "";
+        for(let y=0; y<rows; y++) {
+            for(let x=0; x<cols; x++) {
+                let v = Math.sin(x*0.1 + time) + Math.sin((y*0.1 + time*0.5));
+                v += Math.sin((x+y)*0.05 + time);
+                let idx = Math.floor(((v + 3) / 6) * chars.length);
+                output += chars[idx] || " ";
+            }
+            output += "\n";
+        }
+        return output;
+    }
+
+    function renderDNA() {
+        time += 0.1;
+        let output = "";
+        for(let y=0; y<rows; y++) {
+            let line = Array(cols).fill(" ");
+            let centerX = cols/2;
+            let wave1 = Math.sin(y*0.2 + time) * 15;
+            let wave2 = Math.sin(y*0.2 + time + Math.PI) * 15;
+            
+            line[Math.floor(centerX + wave1)] = "8";
+            line[Math.floor(centerX + wave2)] = "D";
+            
+            // Add connecting bars
+            if(y % 3 === 0) {
+                let start = Math.min(centerX+wave1, centerX+wave2);
+                let end = Math.max(centerX+wave1, centerX+wave2);
+                for(let i=Math.floor(start+1); i<end; i++) line[i] = "-";
+            }
+            output += line.join("") + "\n";
+        }
+        return output;
+    }
+
+    // Main Loop
+    let lastTime = 0;
+    function loop(t) {
+        document.getElementById('fps').innerText = Math.round(1000 / (t - lastTime));
+        lastTime = t;
+        
+        if(mode === 'FIRE') display.innerText = renderFire();
+        if(mode === 'CUBE') display.innerText = renderCube();
+        if(mode === 'WAVE') display.innerText = renderWave();
+        if(mode === 'DNA') display.innerText = renderDNA();
+        
+        requestAnimationFrame(loop);
+    }
+
+    setMode('FIRE');
+    loop(0);
+</script>
+</body>
+</html>

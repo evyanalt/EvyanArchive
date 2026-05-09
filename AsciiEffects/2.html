@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Hyperspace</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #display {
+            white-space: pre;
+            line-height: 8px;
+            font-size: 8px;
+            cursor: crosshair;
+            user-select: none;
+        }
+
+        .ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(0, 255, 0, 0.5);
+            font-size: 12px;
+            border-left: 2px solid #0f0;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="display"></div>
+
+<div class="ui">
+    SYSTEM: ACTIVE<br>
+    COORDINATES: <span id="coords">0, 0</span><br>
+    ENGINE: VORTEX_GEN_V2
+</div>
+
+<script>
+    const display = document.getElementById('display');
+    const coordsDisp = document.getElementById('coords');
+    
+    // Grid dimensions
+    const cols = 120;
+    const rows = 60;
+    const chars = " .:-=+*#%@"; // Density scale
+    
+    let time = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Track mouse
+    document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) - 0.5;
+        mouseY = (e.clientY / window.innerHeight) - 0.5;
+        coordsDisp.innerText = `${e.clientX}, ${e.clientY}`;
+    });
+
+    function render() {
+        let frame = "";
+        time += 0.05;
+
+        for (let y = 0; y < rows; y++) {
+            let line = "";
+            for (let x = 0; x < cols; x++) {
+                // Normalize coordinates to (-1, 1)
+                let nx = (x / cols) * 2 - 1;
+                let ny = (y / rows) * 2 - 1;
+
+                // Adjust for aspect ratio
+                nx *= (cols / rows) * 0.5;
+
+                // Calculate distance from center (radius) and angle
+                // Math: r = sqrt(x^2 + y^2)
+                let r = Math.sqrt(nx * nx + ny * ny);
+                let angle = Math.atan2(ny, nx);
+
+                // Create the "Tunnel" movement
+                // Adding time to 1/r creates the forward motion
+                let zoom = 1.0 / (r + 0.01) + time;
+                
+                // Add twist based on distance and mouse position
+                let twist = angle + Math.sin(zoom * 0.5) * mouseX * 5;
+                
+                // The pattern logic
+                let val = Math.sin(zoom) * Math.cos(twist * 3);
+                val += Math.sin(nx * 5 + time) * mouseY; // Mouse displacement
+
+                // Map the -1 to 1 value to our character string length
+                let charIdx = Math.floor(((val + 1) / 2) * chars.length);
+                charIdx = Math.max(0, Math.min(chars.length - 1, charIdx));
+
+                // Brightness drop-off for depth
+                if (r > 1.2) {
+                    line += " ";
+                } else {
+                    line += chars[charIdx];
+                }
+            }
+            frame += line + "\n";
+        }
+
+        display.innerText = frame;
+        requestAnimationFrame(render);
+    }
+
+    render();
+</script>
+</body>
+</html>

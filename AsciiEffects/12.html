@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QUANTUM DEPTH: NULL LAYER</title>
+    <style>
+        :root { --quantum-white: #e0e0ff; --void: #000005; }
+        body { 
+            background: var(--void); color: var(--quantum-white);
+            font-family: 'Courier New', monospace;
+            margin: 0; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh;
+        }
+
+        #quantum-field {
+            white-space: pre; font-size: 8px; line-height: 6px;
+            text-shadow: 0 0 2px var(--quantum-white), 0 0 10px rgba(255,255,255,0.5);
+            filter: blur(0.3px);
+            cursor: none;
+        }
+
+        .warning-overlay {
+            position: absolute; bottom: 20px; width: 100%; text-align: center;
+            color: #ff003c; font-size: 10px; letter-spacing: 5px;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    </style>
+</head>
+<body>
+
+<div id="quantum-field"></div>
+<div class="warning-overlay">WARNING: DIMENSIONAL FABRIC UNRAVELING</div>
+
+<script>
+    const field = document.getElementById('quantum-field');
+    const width = 120, height = 60;
+    const particles = "01-+|/\\*?!@#$%^&";
+    
+    let mouseX = width / 2, mouseY = height / 2;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = Math.floor((e.clientX / window.innerWidth) * width);
+        mouseY = Math.floor((e.clientY / window.innerHeight) * height);
+    });
+
+    function render() {
+        let output = "";
+        for (let y = 0; y < height; y++) {
+            let row = "";
+            for (let x = 0; x < width; x++) {
+                // Calculate distance to "The Observer" (the mouse)
+                let dx = x - mouseX;
+                let dy = y - mouseY;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+
+                // Probability Wave logic
+                // The closer you look, the higher the "vibration" (randomness)
+                let probability = Math.random() * 50;
+                
+                if (probability > dist) {
+                    // Particle is in flux
+                    row += particles[Math.floor(Math.random() * particles.length)];
+                } else if (dist < 1) {
+                    // The core of the singularity
+                    row += " ";
+                } else {
+                    // Stable vacuum state
+                    row += (Math.random() > 0.99) ? "." : " ";
+                }
+            }
+            output += row + "\n";
+        }
+        field.innerText = output;
+        requestAnimationFrame(render);
+    }
+
+    render();
+</script>
+</body>
+</html>

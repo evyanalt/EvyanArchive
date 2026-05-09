@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII BIOLOGY: CELL-SCOPE</title>
+    <style>
+        :root { --bio-green: #39ff14; --lens-bg: #0a1a0a; }
+        body { 
+            background: #000; color: #1a4a1a; 
+            font-family: 'Courier New', monospace; 
+            margin: 0; overflow: hidden;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+
+        /* The Slide (The Background Plant) */
+        #slide {
+            white-space: pre; font-size: 14px; line-height: 12px;
+            user-select: none; opacity: 0.4;
+        }
+
+        /* The Microscope Lens */
+        #lens {
+            position: absolute;
+            width: 250px; height: 250px;
+            border: 2px solid var(--bio-green);
+            border-radius: 50%;
+            background: var(--lens-bg);
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.4), inset 0 0 50px #000;
+            pointer-events: none; /* Let mouse through to track */
+            z-index: 100;
+        }
+
+        #lens-content {
+            white-space: pre; font-size: 10px; line-height: 8px;
+            color: var(--bio-green);
+            text-shadow: 0 0 5px var(--bio-green);
+        }
+
+        .ui-overlay {
+            position: absolute; top: 20px; left: 20px;
+            color: var(--bio-green); font-size: 12px;
+            border: 1px solid var(--bio-green); padding: 10px;
+            background: rgba(0,20,0,0.8);
+        }
+    </style>
+</head>
+<body>
+
+<div class="ui-overlay">
+    OBJECTIVE: 400x MAGNIFICATION<br>
+    SPECIMEN: CRYSTAL_FLORA_CELLS<br>
+    STATUS: PULSING
+</div>
+
+<div id="slide"></div>
+<div id="lens"><div id="lens-content"></div></div>
+
+<script>
+    const slide = document.getElementById('slide');
+    const lens = document.getElementById('lens');
+    const lensContent = document.getElementById('lens-content');
+
+    // Create the background "Plant" structure
+    const plantArt = `
+             .
+          .  |  .
+           \\ | /
+         '-.;;;.-'
+        -==;;;;;==-
+         .-';;;'-.
+           / | \\
+          '  |  '
+             |
+             |
+             |
+    `.repeat(5); // Make it big enough to scan
+
+    slide.innerText = plantArt;
+
+    // Cell symbols that represent "Life"
+    const cells = ["( )", "{ }", "[ ]", "< >", "0 1"];
+    let time = 0;
+
+    // Microscope Tracking
+    document.addEventListener('mousemove', (e) => {
+        lens.style.left = (e.clientX - 125) + 'px';
+        lens.style.top = (e.clientY - 125) + 'px';
+    });
+
+    function renderCells() {
+        time += 0.1;
+        let zoomView = "";
+        const viewSize = 25; // How many "cells" fit in the lens
+
+        for (let y = 0; y < viewSize; y++) {
+            let row = "";
+            for (let x = 0; x < viewSize; x++) {
+                // The "Pulse" math - cells contract and expand
+                let pulse = Math.sin(time + (x * 0.5) + (y * 0.3));
+                if (pulse > 0.8) {
+                    row += cells[Math.floor(time % cells.length)] + " ";
+                } else if (pulse > 0) {
+                    row += ". . ";
+                } else {
+                    row += "    ";
+                }
+            }
+            zoomView += row + "\n";
+        }
+        lensContent.innerText = zoomView;
+        requestAnimationFrame(renderCells);
+    }
+
+    renderCells();
+</script>
+</body>
+</html>

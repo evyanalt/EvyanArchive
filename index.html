@@ -3,19 +3,166 @@
 <head>
 <title>Projects</title>
 <style>
-body { font-family: Arial, sans-serif; }
-h1 { color: #333; } 
-ul { list-style-type: none; padding: 0; }
-li { margin: 10px 0; }
-a { text-decoration: none; color: #007BFF; }
-a:hover { text-decoration: underline; }
+:root {
+    --gold: #ffcc00;
+    --terminal-green: #00ff41;
+    --bg: #0a0a0a;
+    --border: #333;
+}
+
+body {
+    background-color: var(--bg);
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 2px double var(--border);
+    padding-bottom: 24px;
+}
+
+h1 {
+    color: var(--gold);
+    font-size: 28px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 14px;
+    margin: 12px 0 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 0;
+    display: grid;
+    gap: 16px;
+}
+
+li {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--border);
+    padding: 18px 22px;
+    transition: all 0.3s ease;
+}
+
+li:hover {
+    border-left-color: var(--terminal-green);
+    background: rgba(0, 255, 65, 0.06);
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+a:hover {
+    color: var(--terminal-green);
+    text-decoration: underline;
+}
+
+.details {
+    color: #888;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: #444;
+}
+
+pre {
+    color: var(--terminal-green);
+    opacity: 0.8;
+    font-size: 11px;
+    margin: 0 0 22px;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 18px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    li {
+        padding: 16px;
+    }
+}
 </style>
 </head>
 <body>
-<h1>My Projects</h1>
-<ul>
-<li><a href="PC_Crasher/index.html">pc_crasher</a></li>
-<li><a href="Visualtest/index.html">visualtest</a></li>
-</ul>
+<div class="container">
+    <header>
+        <pre>  ______                       _                         _     _           
+ |  ____|                     ( )         /\            | |   (_)          
+ | |____   ___   _  __ _ _ __ |/ ___     /  \   _ __ ___| |__  ___   _____ 
+ |  __\ \ / / | | |/ _` | '_ \  / __|   / /\ \ | '__/ __| '_ \| \ \ / / _ \
+ | |___\ V /| |_| | (_| | | | | \__ \  / ____ \| | | (__| | | | |\ V /  __/
+ |______\_/  \__, |\__,_|_| |_| |___/ /_/    \_\_|  \___|_| |_|_| \_/ \___|
+              __/ |                                                        
+             |___/                                                         </pre>
+        <h1>Project Archive</h1>
+        <p class="subtitle">All of my tests, experiments, and visual demos. Some of which turned into full stories.<br>There are lots of flashing lights and colors in these projects, so proceed with caution.<br>Also some of these are impact-heavy, so be careful, because your browser or pc might crash.</p>
+    </header>
+    <h1>Top-picks</h1>
+    <ul>
+        <li>
+            <a href="PC_Crasher/ver7/index.html">PC Crasher - Version 7</a>
+            <div class="details">Complete chaos in the console and on the page itself.</div>
+        </li>
+        <li>
+            <a href="Visualtest/10/index.html">Dream Engine</a>
+            <div class="details">A whole new world of interactive visuals.</div>
+        </li>
+        <li>
+            <a href="AsciiEffects/13-finale.html">The finale</a>
+            <div class="details">The final part of the ASCII evolution story. It is recommended to play the other parts first.</div>
+        </li>
+    </ul>
+    <h1> </h1>
+    <h1>All Projects</h1>
+    <ul>
+        <li>
+            <a href="PC_Crasher/index.html">pc_crasher</a>
+            <div class="details">A destructive visual experiment with evolving browser mayhem.</div>
+        </li>
+        <li>
+            <a href="Visualtest/index.html">visualtest</a>
+            <div class="details">A collection of experimental render tests and interactive visuals.</div>
+        </li>
+        <li>
+            <a href="AsciiEffects/index.html">ascii_effects</a>
+            <div class="details">A complete log of ASCII evolution and terminal-inspired scenes.</div>
+        </li>
+    </ul>
+    <footer>[INDEX REBUILT IN TERMINAL STYLE]</footer>
+</div>
 </body>
 </html>

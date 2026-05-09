@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Universe Explorer</title>
+    <style>
+        body {
+            background-color: #020205;
+            color: #d1d1d1;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #universe {
+            white-space: pre;
+            line-height: 10px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            user-select: none;
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+        }
+
+        .ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            border-left: 2px solid #555;
+            padding-left: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .sun { color: #ffcc00; font-weight: bold; text-shadow: 0 0 15px #ffcc00; }
+        .planet { color: #4488ff; }
+        .ringed { color: #ff8844; }
+    </style>
+</head>
+<body>
+
+<div class="ui">
+    GALACTIC_COORD: 42-ALPHA<br>
+    TIME_DILATION: <span id="time-val">1.0</span>x<br>
+    <span id="planet-info">SCANNING SECTOR...</span>
+</div>
+
+<div id="universe"></div>
+
+<script>
+    const display = document.getElementById('universe');
+    const width = 100;
+    const height = 50;
+    let time = 0;
+
+    const planets = [
+        { name: "MERCURY", char: "o", radius: 5, speed: 0.08, color: "#aaa" },
+        { name: "VENUS", char: "O", radius: 8, speed: 0.05, color: "#eebb88" },
+        { name: "EARTH", char: "⊕", radius: 12, speed: 0.03, color: "#4488ff" },
+        { name: "MARS", char: "·", radius: 16, speed: 0.02, color: "#ff5533" },
+        { name: "JUPITER", char: "●", radius: 22, speed: 0.01, color: "#ffccaa" },
+        { name: "SATURN", char: "⊝", radius: 28, speed: 0.007, color: "#eecd88" }
+    ];
+
+    function render() {
+        time += 0.5;
+        let grid = Array(height).fill(0).map(() => Array(width).fill(" "));
+
+        // 1. Draw Stars (Static seed based on position)
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                if ((Math.sin(x * 123.4 + y * 567.8) > 0.995)) {
+                    grid[y][x] = Math.random() > 0.1 ? "." : "*";
+                }
+            }
+        }
+
+        // 2. Draw Sun (The Center)
+        const centerX = Math.floor(width / 2);
+        const centerY = Math.floor(height / 2);
+        grid[centerY][centerX] = `<span class="sun">☼</span>`;
+
+        // 3. Calculate Planets
+        planets.forEach(p => {
+            const angle = time * p.speed;
+            // Use Math.cos and Math.sin for circular motion
+            const x = Math.floor(centerX + (p.radius * 1.8) * Math.cos(angle)); // 1.8 compensates for char aspect ratio
+            const y = Math.floor(centerY + p.radius * Math.sin(angle));
+
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                grid[y][x] = `<span style="color:${p.color}">${p.char}</span>`;
+            }
+        });
+
+        // Convert grid to string
+        let output = "";
+        for (let y = 0; y < height; y++) {
+            output += grid[y].join("") + "\n";
+        }
+        display.innerHTML = output;
+        document.getElementById('time-val').innerText = (Math.sin(time*0.01) + 1.5).toFixed(2);
+        
+        requestAnimationFrame(render);
+    }
+
+    render();
+</script>
+</body>
+</html>

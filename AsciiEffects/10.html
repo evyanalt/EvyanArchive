@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Crystal Growth</title>
+    <style>
+        :root { --gem: #00e5ff; --bg: #02040a; }
+        body { 
+            background: var(--bg); color: var(--gem); 
+            font-family: monospace; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0;
+        }
+        #display { white-space: pre; line-height: 9px; font-size: 9px; text-shadow: 0 0 8px var(--gem); }
+        .ui { position: absolute; top: 20px; left: 20px; border-left: 2px solid var(--gem); padding-left: 10px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="ui">
+    STATUS: CRYSTALLIZING...<br>
+    LATTICE_TYPE: HEX_GEOMETRIC<br>
+    PRESSURE: HIGH
+</div>
+
+<div id="display"></div>
+
+<script>
+    const display = document.getElementById('display');
+    const width = 100, height = 50;
+    let grid = Array(height).fill(0).map(() => Array(width).fill(0));
+    
+    // Seed the crystal in the center
+    grid[Math.floor(height/2)][Math.floor(width/2)] = 1;
+
+    const chars = [" ", "·", "+", "*", "#", "A", "M"];
+
+    function grow() {
+        let newGrid = grid.map(row => [...row]);
+        
+        // We look for empty spaces next to existing crystals
+        for (let y = 1; y < height - 1; y++) {
+            for (let x = 1; x < width - 1; x++) {
+                if (grid[y][x] === 0) {
+                    // Check neighbors
+                    let neighbors = grid[y-1][x] + grid[y+1][x] + grid[y][x-1] + grid[y][x+1];
+                    
+                    // Probability of growth (The "Physics" of the crystal)
+                    // Lower number = slower, more delicate crystals
+                    if (neighbors > 0 && Math.random() > 0.92) {
+                        // Grow based on the "age" of the neighbor
+                        let avg = neighbors / 4;
+                        newGrid[y][x] = Math.min(6, Math.floor(avg + 1));
+                    }
+                } else if (grid[y][x] < 6 && Math.random() > 0.98) {
+                    // "Aging" or hardening the crystal
+                    newGrid[y][x]++;
+                }
+            }
+        }
+        grid = newGrid;
+    }
+
+    function render() {
+        let output = "";
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                output += chars[grid[y][x]];
+            }
+            output += "\n";
+        }
+        display.innerText = output;
+    }
+
+    function loop() {
+        grow();
+        render();
+        // Stop the loop once it hits the edges
+        if (grid[1][1] === 0) requestAnimationFrame(loop);
+    }
+
+    loop();
+</script>
+</body>
+</html>

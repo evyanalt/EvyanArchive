@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Chaos Terminal</title>
+    <style>
+        :root {
+            --glow-color: #00ff41;
+            --bg-color: #050505;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--glow-color);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-shadow: 0 0 5px var(--glow-color);
+        }
+
+        /* Scanline Overlay */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 10;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+
+        #terminal {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border: 1px solid var(--glow-color);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+
+        pre {
+            font-size: 12px;
+            line-height: 1;
+            margin: 0;
+            white-space: pre;
+            user-select: none;
+        }
+
+        .controls {
+            margin-top: 20px;
+            z-index: 20;
+        }
+
+        button {
+            background: transparent;
+            color: var(--glow-color);
+            border: 1px solid var(--glow-color);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: var(--glow-color);
+            color: black;
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        /* Matrix Background Layer */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .glitch-text {
+            animation: flicker 0.1s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<div id="terminal">
+    <pre id="ascii-art" class="glitch-text">
+        </pre>
+    <div class="controls">
+        <button onclick="toggleChaos()">ACTIVATE CHAOS</button>
+        <button onclick="changeColor()">SHIFT SPECTRUM</button>
+    </div>
+</div>
+
+<script>
+    const asciiArt = `
+      ___          ___          ___          ___     
+     /  /\\        /  /\\        /  /\\        /  /\\    
+    /  /::\\      /  /::\\      /  /:/       /  /:/_   
+   /  /:/\\:\\    /  /:/\\:\\    /  /:/       /  /:/ /\\  
+  /  /:/~/:/   /  /:/~/::\\  /  /:/  ___  /  /:/ /:/_ 
+ /__/:/ /:/___/__/:/ /:/\\:\\/__/:/  /  /\\/__/:/ /:/ /\\
+ \\  \\:\\/:::::/\\  \\:\\/:/__\\/\\  \\:\\ /  /:/\\  \\:\\/:/ /:/
+  \\  \\::/~~~~  \\  \\::/      \\  \\:\\  /:/  \\  \\::/ /:/ 
+   \\  \\:\\       \\  \\:\\       \\  \\:\\/:/    \\  \\:\\/:/  
+    \\  \\:\\       \\  \\:\\       \\  \\::/      \\  \\::/   
+     \\__\\/        \\__\\/        \\__\\/        \\__\\/    
+    `;
+
+    const artElement = document.getElementById('ascii-art');
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+
+    let isChaos = false;
+    let colors = ['#00ff41', '#ff003c', '#00e5ff', '#ffff00', '#ff00ff'];
+    let colorIdx = 0;
+
+    // Set canvas size
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.onresize = resize;
+    resize();
+
+    // 1. Matrix Background Effect
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(5, 5, 5, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = colors[colorIdx];
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    // 2. ASCII Glitch Effect
+    function glitchArt() {
+        if (!isChaos) {
+            artElement.innerText = asciiArt;
+            return;
+        }
+
+        let glitched = asciiArt.split('').map(char => {
+            if (Math.random() > 0.95 && char !== ' ' && char !== '\n') {
+                return chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return char;
+        }).join('');
+        
+        artElement.innerText = glitched;
+    }
+
+    // 3. Mouse Interaction
+    document.addEventListener('mousemove', (e) => {
+        if (isChaos) {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            artElement.style.transform = `translate(${x}px, ${y}px) skew(${x/2}deg)`;
+        }
+    });
+
+    // Toggle Functions
+    function toggleChaos() {
+        isChaos = !isChaos;
+        if (!isChaos) {
+            artElement.style.transform = 'none';
+            artElement.innerText = asciiArt;
+        }
+    }
+
+    function changeColor() {
+        colorIdx = (colorIdx + 1) % colors.length;
+        document.documentElement.style.setProperty('--glow-color', colors[colorIdx]);
+    }
+
+    // Loops
+    setInterval(drawMatrix, 33);
+    setInterval(glitchArt, 100);
+
+    // Init art
+    artElement.innerText = asciiArt;
+
+</script>
+</body>
+</html>

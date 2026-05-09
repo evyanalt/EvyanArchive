@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Particle Sandbox</title>
+    <style>
+        :root { --glow: #00ffaa; --bg: #080808; }
+        body { 
+            background: var(--bg); color: var(--glow); 
+            font-family: 'Courier New', monospace; 
+            margin: 0; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        #ui { 
+            padding: 15px; background: #000; border-bottom: 1px solid var(--glow);
+            width: 100%; text-align: center; z-index: 10;
+        }
+        #canvas { 
+            white-space: pre; font-size: 12px; line-height: 10px; 
+            cursor: crosshair; user-select: none; margin-top: 20px;
+        }
+        button { 
+            background: transparent; color: var(--glow); border: 1px solid var(--glow);
+            padding: 5px 15px; cursor: pointer; font-family: inherit; margin: 0 5px;
+        }
+        button.active { background: var(--glow); color: #000; }
+        .hint { font-size: 10px; opacity: 0.6; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div id="ui">
+    <button onclick="setBrush(1)" id="b1" class="active">SAND (#)</button>
+    <button onclick="setBrush(2)" id="b2">WATER (~)</button>
+    <button onclick="setBrush(3)" id="b3">WALL (X)</button>
+    <button onclick="clearGrid()">CLEAR</button>
+    <div class="hint">CLICK AND DRAG TO PAINT MATTER</div>
+</div>
+
+<div id="canvas"></div>
+
+<script>
+    const width = 80;
+    const height = 50;
+    const canvas = document.getElementById('canvas');
+    let grid = Array(height).fill(0).map(() => Array(width).fill(0));
+    let brushType = 1; // 1: Sand, 2: Water, 3: Wall
+    let isMouseDown = false;
+
+    const chars = [" ", "#", "~", "X"];
+
+    function setBrush(type) {
+        brushType = type;
+        document.querySelectorAll('button').forEach((b, i) => {
+            if(i < 3) b.classList.toggle('active', i + 1 === type);
+        });
+    }
+
+    function clearGrid() {
+        grid = Array(height).fill(0).map(() => Array(width).fill(0));
+    }
+
+    // Interaction logic
+    window.onmousedown = () => isMouseDown = true;
+    window.onmouseup = () => isMouseDown = false;
+    
+    canvas.onmousemove = (e) => {
+        if (!isMouseDown) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left) / 9.6); // Char width approx
+        const y = Math.floor((e.clientY - rect.top) / 10);   // Line height
+        
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            grid[y][x] = brushType;
+            // Add a bit of spray for sand/water
+            if(brushType !== 3 && Math.random() > 0.5) {
+                if(x+1 < width) grid[y][x+1] = brushType;
+            }
+        }
+    };
+
+    function update() {
+        // We create a new grid to avoid "double-updating" particles in one frame
+        let nextGrid = grid.map(row => [...row]);
+
+        // We iterate backwards (bottom to top) so falling particles don't teleport
+        for (let y = height - 2; y >= 0; y--) {
+            for (let x = 0; x < width; x++) {
+                let current = grid[y][x];
+
+                // SAND PHYSICS
+                if (current === 1) {
+                    if (grid[y + 1][x] === 0) {
+                        nextGrid[y + 1][x] = 1;
+                        nextGrid[y][x] = 0;
+                    } else if (x > 0 && grid[y + 1][x - 1] === 0) {
+                        nextGrid[y + 1][x - 1] = 1;
+                        nextGrid[y][x] = 0;
+                    } else if (x < width - 1 && grid[y + 1][x + 1] === 0) {
+                        nextGrid[y + 1][x + 1] = 1;
+                        nextGrid[y][x] = 0;
+                    }
+                }
+
+                // WATER PHYSICS
+                if (current === 2) {
+                    if (grid[y + 1][x] === 0) {
+                        nextGrid[y + 1][x] = 2;
+                        nextGrid[y][x] = 0;
+                    } else {
+                        // Spread left or right
+                        let dir = Math.random() > 0.5 ? 1 : -1;
+                        if (x + dir >= 0 && x + dir < width && grid[y][x + dir] === 0) {
+                            nextGrid[y][x + dir] = 2;
+                            nextGrid[y][x] = 0;
+                        }
+                    }
+                }
+            }
+        }
+        grid = nextGrid;
+    }
+
+    function render() {
+        let output = "";
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                output += chars[grid[y][x]];
+            }
+            output += "\n";
+        }
+        canvas.innerText = output;
+    }
+
+    function loop() {
+        update();
+        render();
+        requestAnimationFrame(loop);
+    }
+
+    loop();
+</script>
+</body>
+</html>

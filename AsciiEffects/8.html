@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FACTORY: CRITICAL TEMP</title>
+    <style>
+        :root {
+            --metal: #718096; --laser: #ff003c; --screen: #00ff41; --bg: #050505;
+        }
+        body {
+            background-color: var(--bg); color: var(--metal);
+            font-family: 'Courier New', monospace;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden; transition: background 0.5s;
+        }
+        body.meltdown { background-color: #200; animation: shake 0.1s infinite; }
+        
+        #factory-floor {
+            background: #000; padding: 20px; border: 4px double var(--metal);
+            position: relative; transition: border-color 0.3s;
+        }
+        .conveyor { white-space: pre; line-height: 1; font-size: 14px; color: var(--screen); }
+        .machine { color: #fff; text-shadow: 0 0 5px #fff; }
+        .laser-line {
+            position: absolute; top: 0; left: 50%; width: 2px; height: 100%;
+            background: var(--laser); box-shadow: 0 0 10px var(--laser); z-index: 5;
+        }
+
+        #stats {
+            margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 20px; width: 450px; font-size: 12px;
+        }
+        .lcd { border: 1px solid var(--screen); padding: 10px; color: var(--screen); }
+        .warning-text { color: #ff003c; font-weight: bold; display: none; }
+        .meltdown .warning-text { display: inline; animation: blink 0.2s infinite; }
+        
+        @keyframes shake {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -2px); }
+            100% { transform: translate(1px, 2px); }
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="factory-floor">
+    <div class="laser-line"></div>
+    <div id="display" class="conveyor"></div>
+</div>
+
+<div id="stats">
+    <div class="lcd">
+        CORE TEMP: <span id="temp">30</span>°C<br>
+        STATUS: <span id="status">NOMINAL</span>
+    </div>
+    <div class="lcd">
+        EMERGENCY VENT: <span id="vent">CLOSED</span><br>
+        <span class="warning-text">!!! CRITICAL OVERHEAT !!!</span>
+    </div>
+</div>
+
+<button onclick="overdrive()" style="margin-top:20px; background:none; border:1px solid #ff003c; color:#ff003c; cursor:pointer; padding:10px;">FORCE OVERDRIVE</button>
+
+<script>
+    const display = document.getElementById('display');
+    const width = 60, height = 20;
+    let conveyorBelt = Array(height).fill(0).map(() => Array(width).fill(" "));
+    let frame = 0, temp = 30, isMeltdown = false;
+
+    const bluePrints = [[" [ ] ", "[=]", " [ ] "], ["  /\\  ", " /  \\ ", "/____\\"], [" (o o)", "  \\-/ ", "  _|_ "]];
+
+    function overdrive() { temp += 30; }
+
+    function update() {
+        frame++;
+        // Heat logic
+        if (temp > 100) {
+            isMeltdown = true;
+            document.body.classList.add('meltdown');
+            document.getElementById('status').innerText = "MELTDOWN";
+            document.getElementById('vent').innerText = "FAILSAFE ACTIVE";
+            temp -= 0.5; // Cooling down slowly
+        } else {
+            isMeltdown = false;
+            document.body.classList.remove('meltdown');
+            document.getElementById('status').innerText = "NOMINAL";
+            document.getElementById('vent').innerText = "CLOSED";
+            if (temp > 30) temp -= 0.1; // Natural cooling
+        }
+        
+        document.getElementById('temp').innerText = Math.floor(temp);
+
+        // Move belt
+        for (let y = 0; y < height; y++) {
+            conveyorBelt[y].shift();
+            conveyorBelt[y].push(isMeltdown && Math.random() > 0.7 ? "!" : " ");
+        }
+
+        // Forge items
+        if (frame % 10 === 0) {
+            temp += 4; // Each item adds heat
+            const bp = bluePrints[Math.floor(Math.random() * bluePrints.length)];
+            const startY = Math.floor(Math.random() * (height - 4)) + 1;
+            for(let i=0; i<bp.length; i++) {
+                for(let j=0; j<bp[i].length; j++) {
+                    let char = bp[i][j];
+                    // Meltdown glitches the characters
+                    if (isMeltdown && Math.random() > 0.5) char = "?";
+                    conveyorBelt[startY + i][width - 1 - j] = char;
+                }
+            }
+        }
+        render();
+    }
+
+    function render() {
+        let output = "╔" + "═".repeat(width) + "╗\n";
+        for (let y = 0; y < height; y++) {
+            let row = conveyorBelt[y].join("");
+            // If melting, randomly "droop" characters down a row
+            if (isMeltdown && Math.random() > 0.9 && y < height-1) {
+                conveyorBelt[y+1][Math.floor(Math.random()*width)] = conveyorBelt[y][Math.floor(Math.random()*width)];
+            }
+            output += "║" + row.substring(0,28) + "<span class='machine'>" + row.substring(28,32) + "</span>" + row.substring(32) + "║\n";
+        }
+        output += "╚" + "═".repeat(width) + "╝";
+        display.innerHTML = output;
+    }
+
+    setInterval(update, 50);
+</script>
+</body>
+</html>

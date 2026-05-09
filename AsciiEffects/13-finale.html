@@ -1,0 +1,720 @@
+# ASCII Cinematic Universe — Finale Edition
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ASCII Cinematic Universe</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        overflow: hidden;
+        background: black;
+        width: 100%;
+        height: 100%;
+        font-family: Consolas, monospace;
+    }
+
+    canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    body::before {
+        content: "";
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        background:
+            repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.03) 0px,
+                rgba(255,255,255,0.03) 1px,
+                transparent 2px,
+                transparent 4px
+            );
+        mix-blend-mode: overlay;
+        z-index: 20;
+    }
+
+    body::after {
+        content: "";
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.5));
+        z-index: 20;
+    }
+
+    #ui {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 30;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: white;
+        text-shadow: 0 0 10px currentColor;
+        transition: opacity 0.3s;
+    }
+
+    button {
+        background: rgba(0,0,0,0.5);
+        color: inherit;
+        border: 1px solid currentColor;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-family: inherit;
+        letter-spacing: 2px;
+        backdrop-filter: blur(4px);
+    }
+
+    button:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    #message {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 30;
+        color: white;
+        font-size: 20px;
+        letter-spacing: 4px;
+        text-shadow: 0 0 10px currentColor;
+        pointer-events: none;
+        opacity: 0.9;
+    }
+
+    .shake {
+        animation: shake 0.08s infinite;
+    }
+
+    @keyframes shake {
+        0% { transform: translate(2px, 1px); }
+        25% { transform: translate(-2px, 1px); }
+        50% { transform: translate(2px, -2px); }
+        75% { transform: translate(-1px, 2px); }
+        100% { transform: translate(1px, -1px); }
+    }
+</style>
+</head>
+<body>
+<div id="ui">
+    <button id="overdrive">OVERDRIVE</button>
+    <div id="heat">HEAT: 0°C</div>
+</div>
+<div id="message">BOOTING REALITY...</div>
+<canvas id="c"></canvas>
+
+<script>
+/*
+=====================================================
+ASCII CINEMATIC UNIVERSE
+=====================================================
+Pure HTML/CSS/JS
+No libraries.
+Canvas-powered.
+
+Acts:
+1. Forge
+2. Macro
+3. Micro
+4. Quantum
+5. Singularity
+=====================================================
+*/
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+let w = canvas.width = innerWidth;
+let h = canvas.height = innerHeight;
+
+window.addEventListener('resize', () => {
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+});
+
+const mouse = {
+    x: w / 2,
+    y: h / 2,
+    down: false
+};
+
+window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+window.addEventListener('mousedown', () => mouse.down = true);
+window.addEventListener('mouseup', () => mouse.down = false);
+
+let scrollDepth = 0;
+window.addEventListener('wheel', e => {
+    scrollDepth += Math.sign(e.deltaY);
+});
+
+const message = document.getElementById('message');
+const heatText = document.getElementById('heat');
+const overdriveBtn = document.getElementById('overdrive');
+
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-';
+const quantumChars = '+-/*%';
+const structures = '▓▒░█';
+
+let act = 1;
+let frame = 0;
+let heat = 0;
+let particles = [];
+let stars = [];
+let planets = [];
+let cells = [];
+let quantum = [];
+let finalArt = [];
+
+const palette = {
+    forge: '#00ff88',
+    danger: '#ff3300',
+    cosmic: '#66ccff',
+    micro: '#88ffcc',
+    quantum: '#ffffff',
+    singularity: '#ff00ff'
+};
+
+function setMessage(text) {
+    message.textContent = text;
+}
+
+function rand(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomChar() {
+    return chars[Math.floor(Math.random() * chars.length)];
+}
+
+class Particle {
+    constructor(x, y, char, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.char = char;
+        this.color = color;
+        this.size = 16;
+        this.life = 1;
+    }
+
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        ctx.fillText(this.char, this.x, this.y);
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+}
+
+/*
+=====================================================
+ACT I — THE FORGE
+=====================================================
+*/
+
+function initForge() {
+    particles = [];
+
+    for (let i = 0; i < 400; i++) {
+        particles.push(new Particle(
+            w / 2 + (Math.random() - 0.5) * 100,
+            h / 2 + (Math.random() - 0.5) * 100,
+            randomChar(),
+            palette.forge
+        ));
+    }
+
+    setMessage('THE FORGE // PRESS OVERDRIVE');
+}
+
+function updateForge() {
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = palette.forge;
+    ctx.font = '16px Consolas';
+
+    const beltY = h / 2;
+
+    for (let x = 0; x < w; x += 20) {
+        ctx.fillText('=', (x + frame * 4) % (w + 20), beltY);
+    }
+
+    particles.forEach(p => {
+        p.vx += (Math.sin(frame * 0.01 + p.y * 0.01)) * 0.02;
+
+        if (heat > 500) {
+            p.vy += 0.01;
+        }
+
+        p.update();
+        p.draw();
+
+        if (Math.random() < 0.03) {
+            p.char = rand(structures);
+        }
+    });
+
+    heat += 0.5;
+
+    heatText.innerHTML = `HEAT: ${Math.floor(heat)}°C`;
+
+    if (heat > 700) {
+        document.body.classList.add('shake');
+    }
+
+    if (heat >= 1000) {
+        explodeForge();
+    }
+}
+
+function explodeForge() {
+    act = 2;
+    document.body.classList.remove('shake');
+
+    particles.forEach(p => {
+        p.vx = (Math.random() - 0.5) * 15;
+        p.vy = (Math.random() - 0.5) * 15;
+    });
+
+    setTimeout(() => {
+        initMacro();
+    }, 2500);
+}
+
+overdriveBtn.onclick = () => {
+    heat += 120;
+};
+
+/*
+=====================================================
+ACT II — THE MACRO
+=====================================================
+*/
+
+function initMacro() {
+    act = 2;
+    stars = [];
+    planets = [];
+
+    for (let i = 0; i < 300; i++) {
+        stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            phase: Math.random() * Math.PI * 2
+        });
+    }
+
+    for (let i = 0; i < 6; i++) {
+        planets.push({
+            radius: 80 + i * 55,
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.002 + i * 0.0007,
+            char: ['o', '0', '@', '#', '*', '&'][i],
+            size: 18 + i,
+            id: i
+        });
+    }
+
+    setMessage('CLICK A PLANET TO SCAN');
+}
+
+window.addEventListener('click', e => {
+    if (act !== 2) return;
+
+    const cx = w / 2;
+    const cy = h / 2;
+
+    for (const p of planets) {
+        const x = cx + Math.cos(p.angle) * p.radius;
+        const y = cy + Math.sin(p.angle) * p.radius;
+
+        if (Math.hypot(e.clientX - x, e.clientY - y) < 20) {
+            initMicro();
+        }
+    }
+});
+
+function updateMacro() {
+    ctx.fillStyle = 'rgba(0,0,10,0.25)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '16px Consolas';
+
+    stars.forEach(s => {
+        const glow = (Math.sin(frame * 0.03 + s.phase) + 1) / 2;
+
+        ctx.fillStyle = `rgba(255,255,255,${glow})`;
+        ctx.fillText('.', s.x, s.y);
+    });
+
+    ctx.fillStyle = '#ffff88';
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = '#ffff88';
+    ctx.font = '40px Consolas';
+    ctx.fillText('@', w / 2, h / 2);
+
+    planets.forEach(p => {
+        p.angle += p.speed;
+
+        const x = w / 2 + Math.cos(p.angle) * p.radius;
+        const y = h / 2 + Math.sin(p.angle) * p.radius;
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.beginPath();
+        ctx.arc(w / 2, h / 2, p.radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = palette.cosmic;
+        ctx.font = `${p.size}px Consolas`;
+        ctx.fillText(p.char, x, y);
+    });
+}
+
+/*
+=====================================================
+ACT III — THE MICRO
+=====================================================
+*/
+
+function initMicro() {
+    act = 3;
+    cells = [];
+
+    for (let y = 0; y < h; y += 18) {
+        for (let x = 0; x < w; x += 18) {
+            cells.push({ x, y });
+        }
+    }
+
+    setMessage('MICROSCOPIC STRUCTURES // SCROLL DEEPER');
+}
+
+function updateMicro() {
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '16px Consolas';
+
+    cells.forEach((c, i) => {
+        const pulse = Math.sin(frame * 0.03 + c.x * 0.02) +
+                      Math.sin(frame * 0.04 + c.y * 0.03);
+
+        const offset = pulse * 3;
+
+        const dist = Math.hypot(mouse.x - c.x, mouse.y - c.y);
+
+        const reveal = dist < 120;
+
+        ctx.fillStyle = reveal ? '#00ffaa' : palette.micro;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = reveal ? 20 : 5;
+
+        const ch = reveal
+            ? (Math.random() > 0.5 ? '0' : '1')
+            : (pulse > 0 ? 'O' : 'C');
+
+        ctx.fillText(ch, c.x + offset, c.y + offset);
+    });
+
+    if (scrollDepth > 8 || mouse.down) {
+        initQuantum();
+    }
+}
+
+/*
+=====================================================
+ACT IV — THE QUANTUM VOID
+=====================================================
+*/
+
+let quantumTimer = 900;
+
+function initQuantum() {
+    act = 4;
+    quantum = [];
+
+    for (let y = 0; y < h; y += 14) {
+        for (let x = 0; x < w; x += 14) {
+            quantum.push({
+                x,
+                y,
+                char: rand(quantumChars)
+            });
+        }
+    }
+
+    quantumTimer = 900;
+
+    setMessage('OBSERVER EFFECT DETECTED');
+}
+
+function updateQuantum() {
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '14px Consolas';
+
+    quantum.forEach(q => {
+        const dist = Math.hypot(mouse.x - q.x, mouse.y - q.y);
+
+        const influence = Math.max(0, 1 - dist / 250);
+
+        if (Math.random() < influence * 0.5) {
+            q.char = rand(quantumChars);
+        }
+
+        const alpha = 0.2 + influence;
+
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+
+        const jitterX = (Math.random() - 0.5) * influence * 10;
+        const jitterY = (Math.random() - 0.5) * influence * 10;
+
+        ctx.fillText(q.char, q.x + jitterX, q.y + jitterY);
+    });
+
+    quantumTimer--;
+
+    setMessage(`REALITY COLLAPSE IN ${Math.floor(quantumTimer / 60)}`);
+
+    if (quantumTimer <= 0) {
+        initSingularity();
+    }
+}
+
+/*
+=====================================================
+ACT V — THE SINGULARITY
+=====================================================
+*/
+
+let singularityPhase = 0;
+
+function initSingularity() {
+    act = 5;
+    particles = [];
+
+    for (let i = 0; i < 2500; i++) {
+        particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: 0,
+            vy: 0,
+            char: rand(chars),
+            consumed: false
+        });
+    }
+
+    singularityPhase = 0;
+
+    setMessage('GRAVITATIONAL SINGULARITY');
+}
+
+function updateSingularity() {
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2;
+
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowBlur = 40;
+    ctx.shadowColor = '#ffffff';
+    ctx.font = '30px Consolas';
+
+    ctx.fillText('Ø', cx, cy);
+
+    let remaining = 0;
+
+    particles.forEach(p => {
+        const dx = cx - p.x;
+        const dy = cy - p.y;
+
+        const distSq = dx * dx + dy * dy + 0.1;
+
+        const force = 1500 / distSq;
+
+        const angle = Math.atan2(dy, dx);
+
+        p.vx += Math.cos(angle) * force;
+        p.vy += Math.sin(angle) * force;
+
+        p.vx += Math.cos(frame * 0.01 + distSq * 0.00001) * 0.02;
+        p.vy += Math.sin(frame * 0.01 + distSq * 0.00001) * 0.02;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (Math.hypot(dx, dy) > 8) {
+            remaining++;
+
+            ctx.fillStyle = palette.singularity;
+            ctx.shadowColor = palette.singularity;
+            ctx.shadowBlur = 10;
+            ctx.font = '14px Consolas';
+            ctx.fillText(p.char, p.x, p.y);
+        }
+    });
+
+    if (remaining < 10 && singularityPhase === 0) {
+        singularityPhase = 1;
+
+        setMessage('...');
+
+        setTimeout(bigBang, 3000);
+    }
+}
+
+/*
+=====================================================
+FINAL BIG BANG
+=====================================================
+*/
+
+function bigBang() {
+    act = 6;
+    finalArt = [];
+
+    for (let i = 0; i < 5000; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * Math.min(w, h) * 0.45;
+
+        finalArt.push({
+            x: w / 2 + Math.cos(angle) * radius,
+            y: h / 2 + Math.sin(angle) * radius,
+            char: rand(['#', '@', '%', '&', '*', '░', '▓', '▒']),
+            color: `hsl(${Math.random() * 360},100%,70%)`
+        });
+    }
+
+    setMessage('SYSTEM REBOOTED');
+}
+
+function updateFinale() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '14px Consolas';
+
+    finalArt.forEach(f => {
+        ctx.fillStyle = f.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = f.color;
+        ctx.fillText(f.char, f.x, f.y);
+    });
+
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowBlur = 30;
+    ctx.font = '48px Consolas';
+
+    ctx.fillText('SYSTEM REBOOTED', w / 2 - 260, h - 100);
+}
+
+/*
+=====================================================
+MASTER LOOP
+=====================================================
+*/
+
+function loop() {
+    frame++;
+
+    switch (act) {
+        case 1:
+            updateForge();
+            break;
+
+        case 2:
+            updateMacro();
+            break;
+
+        case 3:
+            updateMicro();
+            break;
+
+        case 4:
+            updateQuantum();
+            break;
+
+        case 5:
+            updateSingularity();
+            break;
+
+        case 6:
+            updateFinale();
+            break;
+    }
+
+    requestAnimationFrame(loop);
+}
+
+/*
+=====================================================
+BOOT SEQUENCE
+=====================================================
+*/
+
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
+initForge();
+loop();
+
+</script>
+</body>
+</html>
+```
+
+## Notes
+
+### Controls
+
+* OVERDRIVE button increases forge heat.
+* Click planets to scan them.
+* Move mouse in quantum mode to disturb reality.
+* Scroll or click deeper in the microscopic act.
+
+### Vibe
+
+This thing is intentionally halfway between:
+
+* old demoscene productions
+* a terminal hallucination
+* a physics simulation
+* an ASCII fever dream
+* a fake operating system from a sci-fi movie
+
+### Extra ideas you could add later
+
+* audio synthesis with WebAudio API
+* actual fluid simulation
+* WASD freecam
+* procedural ASCII creatures
+* recursive universe nesting
+* multiplayer synchronized universes
+* saving the final art as a screenshot

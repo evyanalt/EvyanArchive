@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Event Horizon</title>
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; color: #00ff41; font-family: monospace; }
+        #controls {
+            position: absolute; top: 10px; left: 10px; z-index: 100;
+            display: flex; gap: 5px; flex-wrap: wrap; background: rgba(0,0,0,0.7); padding: 10px; border: 1px solid #00ff41;
+        }
+        button {
+            background: transparent; color: #00ff41; border: 1px solid #00ff41;
+            padding: 5px 10px; cursor: pointer; font-family: inherit; font-size: 12px;
+        }
+        button:hover { background: #00ff41; color: #000; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <button onclick="setMode('RAIN')">MATRIX RAIN</button>
+    <button onclick="setMode('VORTEX')">BLACK HOLE</button>
+    <button onclick="setMode('DRAIN')">DRAIN SCREEN</button>
+    <button onclick="setMode('MEGA')">ASSEMBLY MODE</button>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height, rows, cols;
+    let particles = [];
+    let mode = 'RAIN';
+    const charList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]";
+    
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        ctx.font = "14px monospace";
+        initParticles();
+    }
+
+    class Particle {
+        constructor(x, y) {
+            this.originX = x;
+            this.originY = y;
+            this.x = x;
+            this.y = y;
+            this.char = charList[Math.floor(Math.random() * charList.length)];
+            this.speed = Math.random() * 3 + 2;
+            this.vx = 0;
+            this.vy = 0;
+        }
+
+        update() {
+            if (mode === 'RAIN') {
+                this.y += this.speed;
+                if (this.y > height) {
+                    this.y = -20;
+                    this.x = Math.random() * width;
+                }
+                // Ease back to vertical velocity
+                this.vx *= 0.9;
+            } 
+            else if (mode === 'VORTEX') {
+                let dx = width/2 - this.x;
+                let dy = height/2 - this.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                let force = 100 / (dist + 1);
+                this.vx += (dx / dist) * force + (dy / dist) * 2; // Gravity + Swirl
+                this.vy += (dy / dist) * force - (dx / dist) * 2;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.95;
+                this.vy *= 0.95;
+            }
+            else if (mode === 'DRAIN') {
+                let targetX = width - 50;
+                let targetY = height - 50;
+                let dx = targetX - this.x;
+                let dy = targetY - this.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                this.vx += (dx / dist) * 0.5;
+                this.vy += (dy / dist) * 0.5;
+                this.x += this.vx;
+                this.y += this.vy;
+                if(dist < 10) { this.x = Math.random()*width; this.y = -20; this.vx=0; this.vy=0; }
+            }
+            else if (mode === 'MEGA') {
+                // Form a giant "X" shape
+                let isX = (Math.abs(this.originX - this.originY * (width/height)) < 20) || 
+                          (Math.abs(this.originX - (height - this.originY) * (width/height)) < 20);
+                
+                let targetX = isX ? this.originX : width/2;
+                let targetY = isX ? this.originY : height/2;
+                
+                this.x += (targetX - this.x) * 0.1;
+                this.y += (targetY - this.y) * 0.1;
+            }
+        }
+
+        draw() {
+            ctx.fillText(this.char, this.x, this.y);
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        const gap = 15;
+        for (let x = 0; x < width; x += gap) {
+            for (let y = 0; y < height; y += gap) {
+                particles.push(new Particle(x, y));
+            }
+        }
+    }
+
+    function setMode(m) {
+        mode = m;
+        if(m === 'RAIN') {
+            particles.forEach(p => { p.vx = 0; p.vy = 0; });
+        }
+    }
+
+    function animate() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.15)"; // Trail effect
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = "#00ff41";
+        
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+</script>
+</body>
+</html>
