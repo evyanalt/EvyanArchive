@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #000;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#warpCanvas {
+    display: block;
+}
+
+.instructions {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 5px;
+    font-weight: bold;
+    pointer-events: none; /* Lets clicks pass through to the canvas */
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.8; }
+}

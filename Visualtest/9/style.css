@@ -1,0 +1,8 @@
+body {
+    margin: 0;
+    background-color: #020205;
+    overflow: hidden;
+}
+canvas {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.2));
+}

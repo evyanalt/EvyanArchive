@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle, #0d0c1c, #05050a); /* Deep Space */
+    overflow: hidden; /* No scrollbars */
+}
+
+canvas {
+    display: block;
+}

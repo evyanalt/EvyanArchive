@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Interactive Experience</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <canvas id="networkCanvas"></canvas>
+
+    <nav class="glass-nav">
+        <div class="logo">N E X U S .</div>
+        <ul class="links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#explore">Explore</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="glow-text">INTO THE VOID</h1>
+                <p>An interactive digital experience.</p>
+                <div class="scroll-indicator">↓ Scroll Down ↓</div>
+            </div>
+        </section>
+        
+        <section id="explore" class="content">
+            <div class="glass-card reveal">
+                <h2>Dynamic Particles</h2>
+                <p>Move your mouse around the screen. Notice how the underlying neural network repels away from your cursor, creating a ripple effect in the connections.</p>
+            </div>
+            <div class="glass-card reveal delay-1">
+                <h2>Scroll Observers</h2>
+                <p>These cards didn't just appear. They waited until they entered your viewport, then triggered a CSS animation via a JavaScript Intersection Observer.</p>
+            </div>
+            <div class="glass-card reveal delay-2">
+                <h2>Glassmorphism</h2>
+                <p>Notice the frosted glass effect? This is achieved using CSS backdrop-filters, giving the UI depth without sacrificing the background visibility.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

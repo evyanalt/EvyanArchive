@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Visuals Showcase</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+      background: radial-gradient(circle at top, #1d1f3a, #090b15 70%);
+      font-family: Arial, sans-serif;
+      color: white;
+      height: 100vh;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 4rem;
+      letter-spacing: 0.3rem;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #7cf, #f7a, #9f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 4s ease-in-out infinite alternate;
+    }
+
+    p {
+      margin-top: 1rem;
+      opacity: 0.75;
+      font-size: 1rem;
+      letter-spacing: 0.1rem;
+    }
+
+    @keyframes glow {
+      from {
+        filter: drop-shadow(0 0 10px rgba(100, 200, 255, 0.4));
+      }
+      to {
+        filter: drop-shadow(0 0 30px rgba(255, 100, 200, 0.8));
+      }
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    #toggleUI {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .controls {
+      max-width: 90vw;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-height: 160px;
+      overflow-y: auto;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .controls::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .controls::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 999px;
+    }
+
+    button {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <div class="overlay">
+    <h1>Dream Engine</h1>
+    <p>Move your mouse and click to create energy bursts</p>
+  </div>
+
+  <button id="toggleUI">Hide UI</button>
+
+  <div class="controls">
+    <button onclick="setMode('galaxy')">Galaxy</button>
+    <button onclick="setMode('matrix')">Matrix</button>
+    <button onclick="setMode('waves')">Waves</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      initGalaxy();
+    });
+
+    let mouse = {
+      x: w / 2,
+      y: h / 2
+    };
+
+    window.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    let mode = 'galaxy';
+
+    function setMode(m) {
+      mode = m;
+    }
+
+    // ---------------- GALAXY ----------------
+
+    let particles = [];
+
+    function initGalaxy() {
+      particles = [];
+      for (let i = 0; i < 250; i++) {
+        particles.push({
+          angle: Math.random() * Math.PI * 2,
+          radius: Math.random() * 300,
+          speed: (Math.random() - 0.5) * 0.01,
+          size: Math.random() * 3 + 1,
+          hue: Math.random() * 360
+        });
+      }
+    }
+
+    initGalaxy();
+
+    function drawGalaxy() {
+      ctx.fillStyle = 'rgba(5, 5, 15, 0.15)';
+      ctx.fillRect(0, 0, w, h);
+
+      particles.forEach(p => {
+        p.angle += p.speed;
+
+        const x = mouse.x + Math.cos(p.angle) * p.radius;
+        const y = mouse.y + Math.sin(p.angle) * p.radius;
+
+        ctx.beginPath();
+        ctx.fillStyle = `hsl(${p.hue}, 100%, 70%)`;
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    // ---------------- MATRIX ----------------
+
+    const letters = '01アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = 18;
+    let columns = Math.floor(w / fontSize);
+    let drops = Array(columns).fill(1);
+
+    function resetMatrix() {
+      columns = Math.floor(w / fontSize);
+      drops = Array(columns).fill(1);
+    }
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = '#00ff88';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > h && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    // ---------------- WAVES ----------------
+
+    let time = 0;
+
+    function drawWaves() {
+      ctx.fillStyle = 'rgba(10,10,25,0.12)';
+      ctx.fillRect(0, 0, w, h);
+
+      for (let j = 0; j < 6; j++) {
+        ctx.beginPath();
+
+        for (let x = 0; x < w; x++) {
+          const y = h / 2 +
+            Math.sin(x * 0.01 + time + j) * (40 + j * 10) +
+            Math.sin(x * 0.02 + time * 1.5) * 20;
+
+          ctx.lineTo(x, y + j * 25 - 70);
+        }
+
+        ctx.strokeStyle = `hsla(${180 + j * 25}, 100%, 70%, 0.6)`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      time += 0.02;
+    }
+
+    // ---------------- BURSTS ----------------
+
+    let bursts = [];
+
+    window.addEventListener('click', e => {
+      for (let i = 0; i < 50; i++) {
+        bursts.push({
+          x: e.clientX,
+          y: e.clientY,
+          dx: (Math.random() - 0.5) * 8,
+          dy: (Math.random() - 0.5) * 8,
+          life: 100,
+          hue: Math.random() * 360
+        });
+      }
+    });
+
+    function drawBursts() {
+      bursts.forEach((b, index) => {
+        b.x += b.dx;
+        b.y += b.dy;
+        b.life--;
+
+        ctx.fillStyle = `hsla(${b.hue},100%,70%,${b.life / 100})`;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (b.life <= 0) {
+          bursts.splice(index, 1);
+        }
+      });
+    }
+
+    // ---------------- BLACK HOLE ----------------
+
+    let holeSpin = 0;
+
+    function drawBlackHole() {
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0,0,w,h);
+
+      for (let i = 0; i < 2000; i++) {
+        const angle = i * 0.05 + holeSpin;
+        const radius = Math.sqrt(i) * 12;
+
+        const x = w/2 + Math.cos(angle) * radius;
+        const y = h/2 + Math.sin(angle) * radius;
+
+        ctx.fillStyle = `hsla(${i/5 + holeSpin*20},100%,60%,0.5)`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+
+      ctx.beginPath();
+      ctx.arc(w/2, h/2, 80, 0, Math.PI * 2);
+      ctx.fillStyle = 'black';
+      ctx.fill();
+
+      holeSpin += 0.02;
+    }
+
+    // ---------------- GLITCH ----------------
+
+    function drawGlitch() {
+      ctx.fillStyle = `rgba(${Math.random()*255},0,${Math.random()*255},0.15)`;
+      ctx.fillRect(0,0,w,h);
+
+      for(let i = 0; i < 80; i++) {
+        ctx.fillStyle = `hsl(${Math.random()*360},100%,60%)`;
+        ctx.fillRect(
+          Math.random()*w,
+          Math.random()*h,
+          Math.random()*300,
+          Math.random()*12
+        );
+      }
+
+      ctx.font = `${20 + Math.random()*100}px monospace`;
+      ctx.fillStyle = 'white';
+      ctx.fillText(
+        ['SYSTEM FAILURE','VOID','ERROR','CHAOS','REALITY.EXE'][Math.floor(Math.random()*5)],
+        Math.random()*w,
+        Math.random()*h
+      );
+    }
+
+    // ---------------- LIQUID ----------------
+
+    let liquidTime = 0;
+
+    function drawLiquid() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      for(let x = 0; x < w; x += 8) {
+        for(let y = 0; y < h; y += 8) {
+          const value = Math.sin(x*0.01 + liquidTime) +
+                        Math.cos(y*0.01 + liquidTime) +
+                        Math.sin((x+y)*0.005 + liquidTime);
+
+          const hue = value * 120 + 200;
+
+          ctx.fillStyle = `hsla(${hue},100%,60%,0.6)`;
+          ctx.beginPath();
+          ctx.arc(
+            x + Math.sin(liquidTime + x*0.01)*10,
+            y + Math.cos(liquidTime + y*0.01)*10,
+            value * 2 + 3,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+      }
+
+      liquidTime += 0.03;
+    }
+
+    // ---------------- HELL MODE ----------------
+
+    let chaos = 0;
+
+    function drawHell() {
+      drawGalaxy();
+      drawMatrix();
+      drawTunnel();
+      drawFire();
+      drawGrid();
+
+      ctx.save();
+      ctx.translate(w/2, h/2);
+      ctx.rotate(Math.sin(chaos*0.01) * 0.2);
+      ctx.scale(1 + Math.sin(chaos*0.02)*0.1, 1 + Math.cos(chaos*0.02)*0.1);
+      ctx.translate(-w/2, -h/2);
+
+      for(let i = 0; i < 20; i++) {
+        ctx.drawImage(canvas,
+          Math.random()*20-10,
+          Math.random()*20-10,
+          w,
+          h
+        );
+      }
+
+      ctx.restore();
+
+      chaos++;
+    }
+
+    // ---------------- ASCII VOID ----------------
+
+    const asciiChars = ' .:-=+*#%@';
+    let asciiTick = 0;
+
+    function drawAsciiVoid() {
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.fillRect(0,0,w,h);
+
+      ctx.font = '12px monospace';
+
+      for(let y = 0; y < h; y += 12) {
+        for(let x = 0; x < w; x += 8) {
+          const v = Math.sin(x*0.02 + asciiTick) +
+                    Math.cos(y*0.03 + asciiTick*1.4) +
+                    Math.sin((x+y)*0.01);
+
+          const index = Math.floor(
+            ((v + 3) / 6) * asciiChars.length
+          );
+
+          const char = asciiChars[Math.max(0, Math.min(asciiChars.length-1,index))];
+
+          ctx.fillStyle = `hsl(${x*0.2 + y*0.1 + asciiTick*50},100%,70%)`;
+          ctx.fillText(char, x, y);
+        }
+      }
+
+      asciiTick += 0.02;
+    }
+
+    // ---------------- FAKE TERMINAL ----------------
+
+    const bootLines = [
+      'BOOTING CHAOS ENGINE...',
+      'MEMORY CORRUPTION DETECTED',
+      'INITIALIZING VOID.DLL',
+      'CONNECTING TO REALITY...',
+      'GPU TEMPERATURE: CRITICAL',
+      'ERROR: HUMAN.EXE STOPPED RESPONDING',
+      'LOADING GLITCH PARTICLES...',
+      'ASCII OVERFLOW DETECTED'
+    ];
+
+    let terminalOffset = 0;
+
+    function drawTerminal() {
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(0,0,w,h);
+
+      ctx.font = '20px monospace';
+
+      for(let i = 0; i < bootLines.length; i++) {
+        const line = bootLines[i];
+
+        let corrupted = '';
+
+        for(let c of line) {
+          if(Math.random() > 0.96) {
+            corrupted += String.fromCharCode(33 + Math.random()*90);
+          } else {
+            corrupted += c;
+          }
+        }
+
+        ctx.fillStyle = `hsl(${120 + Math.sin(i + terminalOffset)*80},100%,70%)`;
+        ctx.fillText(corrupted, 60 + Math.sin(i + terminalOffset)*20, 100 + i*40);
+      }
+
+      terminalOffset += 0.04;
+    }
+
+    // ---------------- DVD NIGHTMARE ----------------
+
+    let dvd = {
+      x: 200,
+      y: 200,
+      dx: 7,
+      dy: 5
+    };
+
+    function drawDVD() {
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(0,0,w,h);
+
+      dvd.x += dvd.dx;
+      dvd.y += dvd.dy;
+
+      if(dvd.x < 0 || dvd.x > w-240) dvd.dx *= -1;
+      if(dvd.y < 0 || dvd.y > h-100) dvd.dy *= -1;
+
+      ctx.save();
+      ctx.translate(dvd.x + 120, dvd.y + 50);
+      ctx.rotate(Math.sin(Date.now()*0.002)*0.2);
+
+      ctx.font = 'bold 72px Arial';
+      ctx.fillStyle = `hsl(${Date.now()*0.05 % 360},100%,70%)`;
+      ctx.fillText('VOID', -100, 20);
+
+      ctx.restore();
+    }
+
+    // ---------------- RECURSIVE REALITY ----------------
+
+    let recursion = 0;
+
+    function drawRecursive() {
+      ctx.fillStyle = 'rgba(0,0,0,0.03)';
+      ctx.fillRect(0,0,w,h);
+
+      ctx.save();
+      ctx.translate(w/2,h/2);
+      ctx.rotate(recursion*0.01);
+      ctx.scale(0.99,0.99);
+      ctx.translate(-w/2,-h/2);
+
+      ctx.drawImage(canvas,
+        Math.sin(recursion*0.03)*30,
+        Math.cos(recursion*0.02)*30,
+        w,
+        h
+      );
+
+      for(let i = 0; i < 20; i++) {
+        ctx.strokeStyle = `hsla(${i*20 + recursion},100%,70%,0.4)`;
+        ctx.strokeRect(
+          w/2 - i*40,
+          h/2 - i*40,
+          i*80,
+          i*80
+        );
+      }
+
+      ctx.restore();
+
+      recursion++;
+    }
+
+    // ---------------- INFINITE MAZE ----------------
+
+    let mazeTick = 0;
+
+    function drawMaze() {
+      ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      ctx.fillRect(0,0,w,h);
+
+      const size = 40;
+
+      for(let x = 0; x < w; x += size) {
+        for(let y = 0; y < h; y += size) {
+          const v = Math.sin(x*0.01 + mazeTick) + Math.cos(y*0.01 + mazeTick);
+
+          ctx.strokeStyle = `hsla(${v*80 + mazeTick*50},100%,70%,0.8)`;
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+
+          if(v > 0) {
+            ctx.moveTo(x,y);
+            ctx.lineTo(x+size,y+size);
+          } else {
+            ctx.moveTo(x+size,y);
+            ctx.lineTo(x,y+size);
+          }
+
+          ctx.stroke();
+        }
+      }
+
+      mazeTick += 0.02;
+    }
+
+    // ---------------- NEURAL STORM ----------------
+
+    let storm = 0;
+
+    function drawStorm() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      for(let i = 0; i < 200; i++) {
+        const angle = i * 0.3 + storm;
+        const radius = Math.sin(i*0.1 + storm) * 400;
+
+        const x = w/2 + Math.cos(angle*1.2) * radius;
+        const y = h/2 + Math.sin(angle*0.8) * radius;
+
+        ctx.strokeStyle = `hsla(${i*2 + storm*100},100%,70%,0.4)`;
+        ctx.beginPath();
+        ctx.moveTo(w/2,h/2);
+        ctx.lineTo(x,y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(x,y,2,0,Math.PI*2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+      }
+
+      storm += 0.01;
+    }
+
+    // ---------------- LAVA LAMP ----------------
+
+    let blobs = Array.from({length: 15}, () => ({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      dx: (Math.random()-0.5)*3,
+      dy: (Math.random()-0.5)*3,
+      r: 80 + Math.random()*120
+    }));
+
+    function drawLava() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      blobs.forEach(b => {
+        b.x += b.dx;
+        b.y += b.dy;
+
+        if(b.x < 0 || b.x > w) b.dx *= -1;
+        if(b.y < 0 || b.y > h) b.dy *= -1;
+
+        const g = ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+        g.addColorStop(0, `hsla(${Date.now()*0.02 % 360},100%,60%,0.4)`);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+        ctx.fill();
+      });
+    }
+
+    // ---------------- FRACTURE DIMENSION ----------------
+
+    let fractureTime = 0;
+
+    function drawFracture() {
+      ctx.fillStyle = 'rgba(0,0,0,0.04)';
+      ctx.fillRect(0,0,w,h);
+
+      for(let i = 0; i < 40; i++) {
+        ctx.save();
+
+        const x = w/2 + Math.sin(fractureTime*0.01 + i) * 300;
+        const y = h/2 + Math.cos(fractureTime*0.013 + i) * 300;
+
+        ctx.translate(x, y);
+        ctx.rotate(fractureTime*0.01 + i);
+
+        ctx.drawImage(
+          canvas,
+          -w/4,
+          -h/4,
+          w/2,
+          h/2
+        );
+
+        ctx.restore();
+      }
+
+      fractureTime++;
+    }
+
+    // ---------------- DIGITAL ORGANISM ----------------
+
+    const organismNodes = Array.from({length: 120}, () => ({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      dx: (Math.random()-0.5)*2,
+      dy: (Math.random()-0.5)*2
+    }));
+
+    function drawOrganism() {
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(0,0,w,h);
+
+      organismNodes.forEach(a => {
+        a.x += a.dx + Math.sin(Date.now()*0.001 + a.y*0.01);
+        a.y += a.dy + Math.cos(Date.now()*0.001 + a.x*0.01);
+
+        if(a.x < 0 || a.x > w) a.dx *= -1;
+        if(a.y < 0 || a.y > h) a.dy *= -1;
+
+        organismNodes.forEach(b => {
+          const dist = Math.hypot(a.x-b.x, a.y-b.y);
+
+          if(dist < 120) {
+            ctx.strokeStyle = `hsla(${dist*2 + Date.now()*0.02},100%,70%,${1-dist/120})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        });
+
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(a.x,a.y,2,0,Math.PI*2);
+        ctx.fill();
+      });
+    }
+
+    // ---------------- VHS MELTDOWN ----------------
+
+    function drawVHS() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      ctx.drawImage(canvas,
+        Math.random()*20-10,
+        Math.random()*10-5,
+        w,
+        h
+      );
+
+      for(let i = 0; i < 80; i++) {
+        ctx.fillStyle = `rgba(255,255,255,${Math.random()*0.05})`;
+        ctx.fillRect(0, Math.random()*h, w, 1);
+      }
+
+      for(let i = 0; i < 10; i++) {
+        ctx.fillStyle = `hsla(${Math.random()*360},100%,60%,0.08)`;
+        ctx.fillRect(
+          Math.random()*w,
+          Math.random()*h,
+          Math.random()*500,
+          Math.random()*80
+        );
+      }
+    }
+
+    // ---------------- DREAMSCAPE ----------------
+
+    let dream = 0;
+
+    function drawDreamscape() {
+      ctx.fillStyle = 'rgba(5,0,20,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      for(let i = 0; i < 300; i++) {
+        const angle = i * 0.1 + dream;
+        const radius = Math.sin(i*0.02 + dream) * 300;
+
+        const x = w/2 + Math.cos(angle) * radius;
+        const y = h/2 + Math.sin(angle*1.3) * radius;
+
+        ctx.fillStyle = `hsla(${i + dream*50},100%,70%,0.5)`;
+        ctx.beginPath();
+        ctx.arc(x,y,Math.sin(i+dream)*4+4,0,Math.PI*2);
+        ctx.fill();
+      }
+
+      dream += 0.01;
+    }
+
+    // ---------------- FAKE WINDOWS XP CRASH ----------------
+
+    let xpPanic = 0;
+
+    function drawXP() {
+      ctx.fillStyle = '#0000aa';
+      ctx.fillRect(0,0,w,h);
+
+      ctx.fillStyle = 'white';
+      ctx.font = '24px monospace';
+
+      const msgs = [
+        'A problem has been detected and Windows has been shut down.',
+        'IRQL_NOT_LESS_OR_EQUAL',
+        'TECHNICAL INFORMATION:',
+        '*** STOP: 0x0000CHAOS (0xDEADBEEF)',
+        'Beginning dump of physical memory...',
+        'Press CTRL+ALT+DEL to scream.'
+      ];
+
+      msgs.forEach((m,i) => {
+        let jitter = Math.sin(xpPanic*0.1 + i)*4;
+        ctx.fillText(m, 60 + jitter, 120 + i*50);
+      });
+
+      xpPanic++;
+    }
+
+    // ---------------- PI COLLISION SIM ----------------
+
+    let piState = {
+      bigX: 700,
+      smallX: 300,
+      bigV: -1,
+      smallV: 0,
+      bigMass: 10000,
+      smallMass: 1,
+      collisions: 0
+    };
+
+    function drawPiSim() {
+      ctx.fillStyle = '#050505';
+      ctx.fillRect(0,0,w,h);
+
+      for(let step = 0; step < 50; step++) {
+        piState.bigX += piState.bigV;
+        piState.smallX += piState.smallV;
+
+        if(piState.smallX <= 100) {
+          piState.smallV *= -1;
+          piState.collisions++;
+        }
+
+        if(piState.smallX + 50 >= piState.bigX) {
+          const m1 = piState.smallMass;
+          const m2 = piState.bigMass;
+          const u1 = piState.smallV;
+          const u2 = piState.bigV;
+
+          piState.smallV = ((m1-m2)/(m1+m2))*u1 + ((2*m2)/(m1+m2))*u2;
+          piState.bigV = ((2*m1)/(m1+m2))*u1 + ((m2-m1)/(m1+m2))*u2;
+
+          piState.collisions++;
+        }
+      }
+
+      ctx.fillStyle = '#0ff';
+      ctx.fillRect(0, h-150, 50, 50);
+
+      ctx.fillStyle = '#f0f';
+      ctx.fillRect(piState.bigX, h-220, 120, 120);
+
+      ctx.fillStyle = 'white';
+      ctx.font = '40px monospace';
+      ctx.fillText('COLLISIONS: ' + piState.collisions, 50, 80);
+      ctx.fillText('π???', 50, 130);
+
+      ctx.strokeStyle = '#fff';
+      ctx.beginPath();
+      ctx.moveTo(0, h-100);
+      ctx.lineTo(w, h-100);
+      ctx.stroke();
+    }
+
+    // ---------------- AUDIO REACTIVE FAKE ----------------
+
+    let pulse = 0;
+
+    function drawPulse() {
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0,0,w,h);
+
+      const bars = 128;
+      const bw = w / bars;
+
+      for(let i = 0; i < bars; i++) {
+        const fakeAudio = Math.abs(Math.sin(i*0.2 + pulse) * Math.cos(i*0.05 + pulse*2));
+        const bh = fakeAudio * h * 0.8;
+
+        ctx.fillStyle = `hsl(${i*3 + pulse*40},100%,60%)`;
+        ctx.fillRect(i*bw, h-bh, bw-2, bh);
+      }
+
+      pulse += 0.03;
+    }
+
+    // ---------------- LOOP ----------------
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      switch (mode) {
+        case 'galaxy':
+          drawGalaxy();
+          break;
+        case 'matrix':
+          drawMatrix();
+          break;
+        case 'waves':
+          drawWaves();
+          break;
+      }
+
+      drawBursts();
+    }
+
+    animate();
+
+    // UI Toggle
+    const toggleBtn = document.getElementById('toggleUI');
+    let uiVisible = true;
+
+    toggleBtn.onclick = () => {
+      uiVisible = !uiVisible;
+      controls.style.display = uiVisible ? 'flex' : 'none';
+      document.querySelector('.overlay').style.display = uiVisible ? 'block' : 'none';
+      toggleBtn.textContent = uiVisible ? 'Hide UI' : 'Show UI';
+    };
+  </script>
+  <script>
+    // Extra visual modes
+
+    // ---------------- FIRE ----------------
+    function drawFire() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      for (let i = 0; i < 120; i++) {
+        const x = Math.random() * w;
+        const y = h + Math.random() * 120;
+        const size = Math.random() * 40;
+
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+        gradient.addColorStop(0, 'rgba(255,255,180,0.9)');
+        gradient.addColorStop(0.3, 'rgba(255,120,0,0.7)');
+        gradient.addColorStop(1, 'rgba(255,0,0,0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y - Math.random() * 250, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // ---------------- TUNNEL ----------------
+    let tunnelTime = 0;
+
+    function drawTunnel() {
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0,0,w,h);
+
+      for (let i = 0; i < 100; i++) {
+        const radius = (i * 12 + tunnelTime) % 1200;
+
+        ctx.beginPath();
+        ctx.arc(w/2, h/2, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsla(${radius/4},100%,70%,0.6)`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      tunnelTime += 4;
+    }
+
+    // ---------------- GRID ----------------
+    let gridOffset = 0;
+
+    function drawGrid() {
+      ctx.fillStyle = '#050510';
+      ctx.fillRect(0,0,w,h);
+
+      ctx.strokeStyle = 'rgba(0,255,255,0.3)';
+
+      for (let y = 0; y < h; y += 25) {
+        ctx.beginPath();
+        for (let x = 0; x < w; x += 10) {
+          const wave = Math.sin((x + gridOffset) * 0.02 + y * 0.01) * 15;
+          ctx.lineTo(x, y + wave);
+        }
+        ctx.stroke();
+      }
+
+      gridOffset += 2;
+    }
+
+    // ---------------- STARS ----------------
+    const stars = Array.from({ length: 400 }, () => ({
+      x: Math.random() * w - w/2,
+      y: Math.random() * h - h/2,
+      z: Math.random() * w
+    }));
+
+    function drawStars() {
+      ctx.fillStyle = 'rgba(0,0,10,0.35)';
+      ctx.fillRect(0,0,w,h);
+
+      stars.forEach(s => {
+        s.z -= 6;
+        if (s.z <= 0) s.z = w;
+
+        const sx = (s.x / s.z) * w + w/2;
+        const sy = (s.y / s.z) * h + h/2;
+        const size = (1 - s.z / w) * 5;
+
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    // ---------------- FRACTAL DOTS ----------------
+    let angleShift = 0;
+
+    function drawFractal() {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0,0,w,h);
+
+      for (let i = 0; i < 1200; i++) {
+        const angle = i * 0.15 + angleShift;
+        const radius = i * 0.25;
+
+        const x = w/2 + Math.cos(angle) * radius;
+        const y = h/2 + Math.sin(angle) * radius;
+
+        ctx.fillStyle = `hsl(${i/3},100%,70%)`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+
+      angleShift += 0.01;
+    }
+
+    // Add buttons dynamically
+    const controls = document.querySelector('.controls');
+
+    [
+      ['Fire', 'fire'],
+      ['Tunnel', 'tunnel'],
+      ['Grid', 'grid'],
+      ['Stars', 'stars'],
+      ['Fractal', 'fractal'],
+      ['Black Hole', 'blackhole'],
+      ['Glitch', 'glitch'],
+      ['Liquid', 'liquid'],
+      ['Pulse', 'pulse'],
+      ['HELL MODE', 'hell'],
+      ['ASCII VOID', 'ascii'],
+      ['TERMINAL', 'terminal'],
+      ['DVD NIGHTMARE', 'dvd'],
+      ['RECURSIVE', 'recursive'],
+      ['PI SIM', 'pi'],
+      ['FRACTURE', 'fracture'],
+      ['ORGANISM', 'organism'],
+      ['VHS', 'vhs'],
+      ['DREAMSCAPE', 'dream'],
+      ['XP PANIC', 'xp'],
+      ['INFINITE MAZE', 'maze'],
+      ['NEURAL STORM', 'storm'],
+      ['LAVA LAMP', 'lava']
+    ].forEach(([label, value]) => {
+      const btn = document.createElement('button');
+      btn.textContent = label;
+      btn.onclick = () => setMode(value);
+      controls.appendChild(btn);
+    });
+
+    // Extend animation switch
+    const oldAnimate = animate;
+
+    animate = function () {
+      requestAnimationFrame(animate);
+
+      switch (mode) {
+        case 'galaxy':
+          drawGalaxy();
+          break;
+        case 'matrix':
+          drawMatrix();
+          break;
+        case 'waves':
+          drawWaves();
+          break;
+        case 'fire':
+          drawFire();
+          break;
+        case 'tunnel':
+          drawTunnel();
+          break;
+        case 'grid':
+          drawGrid();
+          break;
+        case 'stars':
+          drawStars();
+          break;
+        case 'fractal':
+          drawFractal();
+          break;
+        case 'blackhole':
+          drawBlackHole();
+          break;
+        case 'glitch':
+          drawGlitch();
+          break;
+        case 'liquid':
+          drawLiquid();
+          break;
+        case 'pulse':
+          drawPulse();
+          break;
+        case 'hell':
+          drawHell();
+          break;
+        case 'ascii':
+          drawAsciiVoid();
+          break;
+        case 'terminal':
+          drawTerminal();
+          break;
+        case 'dvd':
+          drawDVD();
+          break;
+        case 'recursive':
+          drawRecursive();
+          break;
+        case 'pi':
+          drawPiSim();
+          break;
+        case 'fracture':
+          drawFracture();
+          break;
+        case 'organism':
+          drawOrganism();
+          break;
+        case 'vhs':
+          drawVHS();
+          break;
+        case 'dream':
+          drawDreamscape();
+          break;
+        case 'xp':
+          drawXP();
+          break;
+        case 'maze':
+          drawMaze();
+          break;
+        case 'storm':
+          drawStorm();
+          break;
+        case 'lava':
+          drawLava();
+          break;
+      }
+
+      drawBursts();
+    }
+
+    animate();
+  </script>
+</body>
+</html>
