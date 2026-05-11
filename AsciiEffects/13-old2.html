@@ -112,7 +112,6 @@
 </head>
 <body>
 <div id="ui">
-    <button id="toggleFX">FX: ON</button>
     <button id="overdrive">OVERDRIVE</button>
     <div id="heat">HEAT: 0°C</div>
 </div>
@@ -170,37 +169,6 @@ window.addEventListener('wheel', e => {
 const message = document.getElementById('message');
 const heatText = document.getElementById('heat');
 const overdriveBtn = document.getElementById('overdrive');
-const toggleFXBtn = document.getElementById('toggleFX');
-
-/*
-=====================================================
-PERFORMANCE TOGGLES
-=====================================================
-Background effects like CRT scanlines, glow blur,
-and heavy alpha trails can slow weaker systems.
-This toggle disables the expensive visual layers
-while keeping the core ASCII simulation alive.
-=====================================================
-*/
-
-let effectsEnabled = true;
-
-function applyFXState() {
-    if (effectsEnabled) {
-        document.body.style.filter = 'contrast(1.05) brightness(1.02)';
-        toggleFXBtn.textContent = 'FX: ON';
-    } else {
-        document.body.style.filter = 'none';
-        toggleFXBtn.textContent = 'FX: OFF';
-    }
-}
-
-toggleFXBtn.onclick = () => {
-    effectsEnabled = !effectsEnabled;
-    applyFXState();
-};
-
-applyFXState();
 
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-';
 const quantumChars = '+-/*%';
@@ -251,7 +219,7 @@ class Particle {
 
     draw() {
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = effectsEnabled ? 10 : 0;
+        ctx.shadowBlur = 10;
         ctx.shadowColor = this.color;
         ctx.fillText(this.char, this.x, this.y);
     }
@@ -284,9 +252,7 @@ function initForge() {
 }
 
 function updateForge() {
-    ctx.fillStyle = effectsEnabled
-        ? 'rgba(0,0,0,0.08)'
-        : 'rgba(0,0,0,0.25)';
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
     ctx.fillRect(0, 0, w, h);
 
     ctx.fillStyle = palette.forge;
@@ -394,9 +360,7 @@ window.addEventListener('click', e => {
 });
 
 function updateMacro() {
-    ctx.fillStyle = effectsEnabled
-        ? 'rgba(0,0,10,0.25)'
-        : 'rgba(0,0,0,0.6)';
+    ctx.fillStyle = 'rgba(0,0,10,0.25)';
     ctx.fillRect(0, 0, w, h);
 
     ctx.font = '16px Consolas';
@@ -409,7 +373,7 @@ function updateMacro() {
     });
 
     ctx.fillStyle = '#ffff88';
-    ctx.shadowBlur = effectsEnabled ? 30 : 0;
+    ctx.shadowBlur = 30;
     ctx.shadowColor = '#ffff88';
     ctx.font = '40px Consolas';
     ctx.fillText('@', w / 2, h / 2);
@@ -451,9 +415,7 @@ function initMicro() {
 }
 
 function updateMicro() {
-    ctx.fillStyle = effectsEnabled
-        ? 'rgba(0,0,0,0.15)'
-        : 'rgba(0,0,0,0.45)';
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
     ctx.fillRect(0, 0, w, h);
 
     ctx.font = '16px Consolas';
@@ -470,7 +432,7 @@ function updateMicro() {
 
         ctx.fillStyle = reveal ? '#00ffaa' : palette.micro;
         ctx.shadowColor = ctx.fillStyle;
-        ctx.shadowBlur = effectsEnabled ? (reveal ? 20 : 5) : 0;
+        ctx.shadowBlur = reveal ? 20 : 5;
 
         const ch = reveal
             ? (Math.random() > 0.5 ? '0' : '1')
@@ -512,9 +474,7 @@ function initQuantum() {
 }
 
 function updateQuantum() {
-    ctx.fillStyle = effectsEnabled
-        ? 'rgba(0,0,0,0.22)'
-        : 'rgba(0,0,0,0.55)';
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
     ctx.fillRect(0, 0, w, h);
 
     ctx.font = '14px Consolas';
@@ -576,16 +536,14 @@ function initSingularity() {
 }
 
 function updateSingularity() {
-    ctx.fillStyle = effectsEnabled
-        ? 'rgba(0,0,0,0.15)'
-        : 'rgba(0,0,0,0.45)';
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
     ctx.fillRect(0, 0, w, h);
 
     const cx = w / 2;
     const cy = h / 2;
 
     ctx.fillStyle = '#ffffff';
-    ctx.shadowBlur = effectsEnabled ? 40 : 0;
+    ctx.shadowBlur = 40;
     ctx.shadowColor = '#ffffff';
     ctx.font = '30px Consolas';
 
@@ -617,7 +575,7 @@ function updateSingularity() {
 
             ctx.fillStyle = palette.singularity;
             ctx.shadowColor = palette.singularity;
-            ctx.shadowBlur = effectsEnabled ? 10 : 0;
+            ctx.shadowBlur = 10;
             ctx.font = '14px Consolas';
             ctx.fillText(p.char, p.x, p.y);
         }
@@ -665,7 +623,7 @@ function updateFinale() {
 
     finalArt.forEach(f => {
         ctx.fillStyle = f.color;
-        ctx.shadowBlur = effectsEnabled ? 10 : 0;
+        ctx.shadowBlur = 10;
         ctx.shadowColor = f.color;
         ctx.fillText(f.char, f.x, f.y);
     });
@@ -751,202 +709,7 @@ This thing is intentionally halfway between:
 * an ASCII fever dream
 * a fake operating system from a sci-fi movie
 
-### ACT VI IDEA — THE AFTERMATH
-
-The universe rebooted...
-But not correctly.
-
-Instead of returning to normality, fragments from every previous act begin leaking into the new reality.
-Stars contain cellular structures.
-Planets bleed quantum symbols.
-The forge conveyor still exists beneath spacetime.
-The black hole never fully disappeared.
-
-Below is an optional expansion you can paste BEFORE the MASTER LOOP section to create a hidden post-ending mode.
-
-```js
-/*
-=====================================================
-ACT VII — THE AFTERMATH
-=====================================================
-Reality has rebooted incorrectly.
-Everything is leaking into everything else.
-=====================================================
-*/
-
-let aftermathTimer = 0;
-let echoes = [];
-
-function initAftermath() {
-    act = 7;
-
-    echoes = [];
-
-    for (let i = 0; i < 4000; i++) {
-        echoes.push({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            char: rand([
-                '#','@','%','░','▒','▓',
-                '0','1','O','C','+','-','/'
-            ]),
-            phase: Math.random() * Math.PI * 2,
-            memory: Math.random()
-        });
-    }
-
-    aftermathTimer = 0;
-
-    setMessage('REBOOT SUCCESSFUL // WARNING: RESIDUAL MEMORY DETECTED');
-}
-
-function updateAftermath() {
-    aftermathTimer++;
-
-    ctx.fillStyle = effectsEnabled
-        ? 'rgba(0,0,0,0.04)'
-        : 'rgba(0,0,0,0.35)';
-    ctx.fillRect(0,0,w,h);
-
-    const centerX = w / 2;
-    const centerY = h / 2;
-
-    const breathing = Math.sin(frame * 0.01) * 80;
-
-    echoes.forEach((e, i) => {
-
-        /*
-        =====================================================
-        EVERY PARTICLE REMEMBERS A DIFFERENT ACT
-        =====================================================
-        */
-
-        const memoryWave = Math.sin(frame * 0.01 + e.phase);
-
-        // lingering forge pull
-        e.vx += Math.sin(frame * 0.002 + e.y * 0.01) * 0.002;
-
-        // microscopic pulsing
-        e.vy += Math.cos(frame * 0.003 + e.x * 0.01) * 0.002;
-
-        // tiny black hole gravity
-        const dx = centerX - e.x;
-        const dy = centerY - e.y;
-        const dist = Math.sqrt(dx*dx + dy*dy) + 0.01;
-
-        const gravity = 0.02 / dist;
-
-        e.vx += dx * gravity;
-        e.vy += dy * gravity;
-
-        // quantum observer effect
-        const mouseDist = Math.hypot(mouse.x - e.x, mouse.y - e.y);
-
-        if (mouseDist < 120 && Math.random() < 0.2) {
-            e.char = rand([
-                '#','@','%','0','1','*','+','Ø'
-            ]);
-        }
-
-        // motion
-        e.x += e.vx;
-        e.y += e.vy;
-
-        // soft wrapping
-        if (e.x < 0) e.x = w;
-        if (e.x > w) e.x = 0;
-        if (e.y < 0) e.y = h;
-        if (e.y > h) e.y = 0;
-
-        // impossible color shifting
-        const hue = (
-            180 +
-            Math.sin(frame * 0.01 + e.phase) * 180 +
-            mouseDist * 0.05
-        ) % 360;
-
-        ctx.fillStyle = `hsla(${hue},100%,70%,0.8)`;
-        ctx.shadowBlur = effectsEnabled ? (12 + memoryWave * 8) : 0;
-        ctx.shadowColor = ctx.fillStyle;
-
-        const driftX = Math.sin(frame * 0.01 + e.phase) * 4;
-        const driftY = Math.cos(frame * 0.01 + e.phase) * 4;
-
-        ctx.fillText(
-            e.char,
-            e.x + driftX,
-            e.y + driftY
-        );
-    });
-
-    /*
-    =====================================================
-    GHOST STRUCTURES
-    =====================================================
-    */
-
-    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-
-    for (let i = 0; i < 8; i++) {
-        ctx.beginPath();
-        ctx.arc(
-            centerX,
-            centerY,
-            100 + i * 60 + breathing,
-            0,
-            Math.PI * 2
-        );
-        ctx.stroke();
-    }
-
-    /*
-    =====================================================
-    THE THING THAT SURVIVED
-    =====================================================
-    */
-
-    const eyeX = centerX + Math.sin(frame * 0.01) * 100;
-    const eyeY = centerY + Math.cos(frame * 0.013) * 100;
-
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowBlur = effectsEnabled ? 40 : 0;
-    ctx.shadowColor = '#ffffff';
-    ctx.font = '42px Consolas';
-
-    ctx.fillText('Ø', eyeX, eyeY);
-
-    if (Math.sin(frame * 0.002) > 0.995) {
-        setMessage('SOMETHING REMEMBERED YOU');
-    }
-
-    if (Math.sin(frame * 0.0015) > 0.998) {
-        setMessage('THE UNIVERSE IS DREAMING AGAIN');
-    }
-}
-```
-
-Then update the MASTER LOOP switch statement:
-
-```js
-case 7:
-    updateAftermath();
-    break;
-```
-
-And finally, inside `bigBang()` add:
-
-```js
-setTimeout(() => {
-    initAftermath();
-}, 12000);
-```
-
-This makes the universe appear stable for 12 seconds...
-then the hidden corruption slowly awakens.
-
-## Extra ideas you could add later
+### Extra ideas you could add later
 
 * audio synthesis with WebAudio API
 * actual fluid simulation
