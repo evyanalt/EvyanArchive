@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeryIncompetentFish - Fixed Alignment</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #00b4d8;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Centering Container */
+        .character-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Absolute pixel-perfect alignment for the ASCII block */
+        .ascii-art {
+            font-size: 16px;
+            line-height: 1.2;
+            white-space: pre;
+            text-align: left; /* Keeps inner art structure intact */
+            animation: float 4s ease-in-out infinite;
+            text-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+        }
+
+        /* Color styling groups to match the drawing */
+        .eye-frame {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .pupil {
+            display: inline-block;
+            color: #00f5d4;
+            animation: blink 6s infinite;
+            transform-origin: center;
+        }
+
+        .mouth {
+            color: #0077b6;
+        }
+
+        .tongue {
+            color: #ff70a6;
+            font-weight: 900;
+            text-shadow: 0 0 12px rgba(255, 112, 166, 0.7);
+        }
+
+        /* Dynamic Title Styling */
+        h1 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            color: #ffffff;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Smooth floating animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* Natural double-blink animation */
+        @keyframes blink {
+            0%, 90%, 94%, 98%, 100% {
+                transform: scaleY(1);
+            }
+            92%, 96% {
+                transform: scaleY(0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="character-container">
+    <div class="ascii-art">
+       .---.---------------------------.---.       
+      /     \                             /     \      
+     |<span class="eye-frame">  (<span class="pupil">O</span>)  </span>|                       |<span class="eye-frame">  (<span class="pupil">O</span>)  </span>|     
+     |       |                       |       |     
+      \     /                             \     /      
+       '---'      <span class="mouth">_______________</span>      '---'       
+              \  <span class="mouth">|_______________|</span>  /              
+               \        <span class="tongue">| |</span>        /               
+             '-.__      <span class="tongue">|_|</span>      __.-'             
+                  |             |                  
+                  |             |                  
+                 /               \                 
+                /                 \                
+               /                   \               
+              /                     \              
+             /                       \             
+            /                         \            
+           /                           \           
+          /                             \          
+         '-------------------------------'         
+    </div>
+    <h1>VERYINCOMPETENTFISH</h1>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeryIncompetentFish - The Void Edition</title>
+    <style>
+        body {
+            background-color: #030305; /* Deep void black */
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* The master grid for the art */
+        .ascii-art {
+            font-size: clamp(10px, 1.5vw, 18px); /* Scales nicely on any screen */
+            line-height: 1.1;
+            letter-spacing: 2px;
+            white-space: pre;
+            text-align: left;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* --- THE VOID --- */
+        .bg {
+            color: #2a2a3d;
+            animation: voidPulse 4s infinite alternate ease-in-out;
+        }
+
+        /* --- THE CHARACTER --- */
+        .body {
+            color: #00d2ff;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        .eye-frame {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        }
+
+        .pupil {
+            display: inline-block;
+            color: #ffffff;
+            transform-origin: center;
+            animation: blink 5s infinite;
+            text-shadow: 0 0 15px #fff;
+        }
+
+        .mouth {
+            color: #000;
+            background-color: #00d2ff; /* Fills the mouth gap over the cyan body */
+        }
+
+        .tongue {
+            color: #ff6b81;
+            text-shadow: 0 0 12px rgba(255, 107, 129, 0.7);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            margin-top: 40px;
+            color: #4a4a6a;
+            letter-spacing: 8px;
+            animation: voidPulse 4s infinite alternate ease-in-out;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes blink {
+            0%, 90%, 94%, 98%, 100% { transform: scaleY(1); }
+            92%, 96% { transform: scaleY(0.1); }
+        }
+
+        @keyframes voidPulse {
+            0% { color: #1f1f2e; text-shadow: 0 0 2px #1f1f2e; }
+            100% { color: #3b3b54; text-shadow: 0 0 8px #3b3b54; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="ascii-art">
+<span class="bg">=+~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~</span>
+<span class="bg">-~+=~.-~+=~.-::</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">::.-~+=~.-~+=~.-~+=</span>
+<span class="bg">=~.-~+=~.-~</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">~.-~+=~.-~+=~.-</span>
+<span class="bg">-~+=~</span><span class="eye-frame">.---.</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="eye-frame">.---.</span><span class="bg">~+=~.-~+=</span>
+<span class="bg">=~.-</span><span class="eye-frame">/ OOOO \</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="eye-frame">/ OOOO \</span><span class="bg">.-~+=~.-</span>
+<span class="bg">-~+</span><span class="eye-frame">|   </span><span class="pupil">OO</span><span class="eye-frame">   |</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="eye-frame">|   </span><span class="pupil">OO</span><span class="eye-frame">   |</span><span class="bg">+~.-~+=</span>
+<span class="bg">=~.-</span><span class="eye-frame">\ OOOO /</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="eye-frame">\ OOOO /</span><span class="bg">.-~+=~.-</span>
+<span class="bg">-~+=</span><span class="eye-frame">`----`</span><span class="body">@@@@@@@@@@@@</span><span class="mouth">__________</span><span class="body">@@@@@@@@@@@@</span><span class="eye-frame">`----`</span><span class="bg">+=~.-~+=~.</span>
+<span class="bg">=~.-~+=~.-~</span><span class="body">@@@@@@@@@@@@</span><span class="mouth">|__________|</span><span class="body">@@@@@@@@@@</span><span class="bg">-~+=~.-~+=~.-~+</span>
+<span class="bg">-~+=~.-~+=~.</span><span class="body">@@@@@@@@@@@@@@@</span><span class="tongue">|  |</span><span class="body">@@@@@@@@@@@@@@</span><span class="bg">.~+=~.-~+=~.-~+</span>
+<span class="bg">=~.-~+=~.-~+=</span><span class="body">@@@@@@@@@@@@@@</span><span class="tongue">|__|</span><span class="body">@@@@@@@@@@@@@</span><span class="bg">=~.-~+=~.-~+=~.-</span>
+<span class="bg">-~+=~.-~+=~.-~</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">~.-~+=~.-~+=~.-~+</span>
+<span class="bg">=~.-~+=~.-~+=~.</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">.~+=~.-~+=~.-~+=~.</span>
+<span class="bg">-~+=~.-~+=~.-~+=</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">+~.-~+=~.-~+=~.-~+=</span>
+<span class="bg">=~.-~+=~.-~+=~.-</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">-~+=~.-~+=~.-~+=~.-</span>
+<span class="bg">-~+=~.-~+=~.-~+=</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">+~.-~+=~.-~+=~.-~+=</span>
+<span class="bg">=~.-~+=~.-~+=~.</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">.~+=~.-~+=~.-~+=~.</span>
+<span class="bg">-~+=~.-~+=~.-~</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">~.-~+=~.-~+=~.-~+</span>
+<span class="bg">=~.-~+=~.-~+=</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">=~.-~+=~.-~+=~.-</span>
+<span class="bg">-~+=~.-~+=~.</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">.~+=~.-~+=~.-~+</span>
+<span class="bg">=~.-~+=~.-~</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">.-~+=~.-~+=~.-</span>
+<span class="bg">-~+=~.-~+=</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">=~.-~+=~.-~+=</span>
+<span class="bg">=~.-~+=~.</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">.~+=~.-~+=~.</span>
+<span class="bg">-~+=~.-~</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">~.-~+=~.-~+</span>
+<span class="bg">=~.-~+=</span><span class="body">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><span class="bg">=~.-~+=~.-</span>
+<span class="bg">-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.-~+=~.</span>
+    </div>
+    <h1>VERYINCOMPETENTFISH</h1>
+</div>
+
+</body>
+</html>

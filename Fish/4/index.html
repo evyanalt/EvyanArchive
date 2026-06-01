@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VeryIncompetentFish</title>
+
+<style>
+body{
+    margin:0;
+    background:#111;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+    font-family:monospace;
+}
+
+#fish{
+    color:#3cc7d6;
+    font-size:18px;
+    line-height:18px;
+    text-align:center;
+    animation: floaty 4s ease-in-out infinite;
+    user-select:none;
+}
+
+.eye{
+    display:inline-block;
+    width:1ch;
+}
+
+.blink{
+    animation: blink 5s infinite;
+}
+
+@keyframes blink{
+    0%,96%,100%{
+        transform:scaleY(1);
+    }
+    98%{
+        transform:scaleY(0.05);
+    }
+}
+
+@keyframes floaty{
+    0%,100%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-12px);
+    }
+}
+</style>
+</head>
+<body>
+
+<pre id="fish">
+ <span class="eye blink">O</span>-----<span class="eye blink">O</span>
+     U
+    \_/
+
+   /^^^^\
+  /      \
+ /        \
+/          \
+\          /
+ \________/
+
+</pre>
+<div id="msg">VeryIncompetentFish.exe is functioning normally*</div>
+
+<script>
+const msgs = [
+"VeryIncompetentFish.exe is functioning normally*",
+"*functioning not guaranteed",
+"Thinking about fish...",
+"Loading competence... 3%",
+"Loading competence... 2%",
+"Loading competence... 1%"
+];
+
+let i = 0;
+setInterval(()=>{
+    i=(i+1)%msgs.length;
+    document.getElementById("msg").textContent = msgs[i];
+},3000);
+</script>
+
+</body>
+</html>

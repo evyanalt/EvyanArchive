@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish</title>
+  <style>
+    :root { --bg: #071018; --card: #0f2330; --accent: #4fd1c5; --muted: #98a8b3; }
+    body {
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background: radial-gradient(1200px 600px at 10% 10%, #071a24 0%, var(--bg) 40%), var(--bg);
+      color: #e6f6f5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 840px; margin: 48px auto; padding: 28px; }
+    header { text-align: center; margin-bottom: 28px; }
+    header h1 { margin: 0 0 6px; color: var(--accent); font-size: 28px; letter-spacing: 2px; }
+    header p { margin: 0; color: var(--muted); }
+    pre.ascii { background: linear-gradient(90deg, rgba(79,209,197,0.04), rgba(255,255,255,0.02));
+      padding: 14px; border-radius: 8px; color: var(--accent); font-size: 12px; overflow:auto; }
+    .versions { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 20px; }
+    .version { background: var(--card); border: 1px solid rgba(255,255,255,0.03); padding: 12px 14px; border-radius: 10px; }
+    .version a { color: #fff; text-decoration: none; display:block; font-weight: bold; }
+    .version small { color: var(--muted); display:block; margin-top:6px; }
+    footer { margin-top: 36px; text-align:center; color: #6f8a93; font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Fish</h1>
+      <p>All versions of my ASCII art of VeryIncompetentFish</p>
+    </header>
+
+    <div class="versions">
+      <div class="version">
+        <a href="./1/index.html">Version 1</a>
+        <small>First version.. not that good tbh</small>
+      </div>
+      <div class="version">
+        <a href="./2/index.html">Version 2</a>
+        <small>Eh I'm new</small>
+      </div>
+      <div class="version">
+        <a href="./3/index.html">Version 3</a>
+        <small>Better</small>
+      </div>
+      <div class="version">
+        <a href="./4/index.html">Version 4</a>
+        <small>Creepy, i give up</small>
+      </div>
+    </div>
+
+    <footer>[FISH ARCHIVE - ALL VERSIONS]</footer>
+  </div>
+</body>
+</html>

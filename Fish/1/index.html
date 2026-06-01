@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeryIncompetentFish Tribute</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #00d2ff;
+            font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        /* The ASCII container handles the floating animation */
+        .ascii-art {
+            font-size: 14px;
+            line-height: 1.2;
+            white-space: pre;
+            display: inline-block;
+            animation: float 4s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        /* Specific styling for the tongue to make it pop pink like the drawing */
+        .tongue {
+            color: #ff8da1;
+            text-shadow: 0 0 10px rgba(255, 141, 161, 0.5);
+        }
+
+        /* Container for the eyes to trigger the blink */
+        .eye {
+            display: inline-block;
+            animation: blink 5s infinite;
+        }
+
+        /* Subtle bobbing animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(1deg);
+            }
+        }
+
+        /* Blinking animation that cuts the eyes to flat lines quickly */
+        @keyframes blink {
+            0%, 90%, 94%, 98%, 100% {
+                transform: scaleY(1);
+            }
+            92%, 96% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="ascii-art">
+       .-----------------.
+      /   <span class="eye">O</span>           <span class="eye">O</span>   \
+     |       _______       |
+     |      |__   __|      |
+     |         <span class="tongue">| |</span>         |
+      \        <span class="tongue">|_|</span>        /
+       '-------. .-------'
+               | |
+              /   \
+             /     \
+            /       \
+           /         \
+          /           \
+         /             \
+        '---------------'
+    </div>
+    <h1>fish <3</h1>
+    <p>This one is inspired by the art from SageGreen</p>
+</div>
+
+</body>
+</html>
