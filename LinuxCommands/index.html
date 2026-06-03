@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Linux Commands</title>
+<style>
+:root {
+    --gold: #ffcc00;
+    --terminal-green: #00ff41;
+    --bg: #0a0a0a;
+    --border: #333;
+}
+
+body {
+    background-color: var(--bg);
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 36px;
+}
+
+.container {
+    max-width: 980px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px double var(--border);
+    padding-bottom: 18px;
+}
+
+h1.title {
+    color: var(--gold);
+    font-size: 26px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin: 8px 0 6px;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+
+.search-wrap {
+    margin: 18px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+input[type="search"] {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    color: #ddd;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.commands {
+    display: grid;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.section-title {
+    color: var(--gold);
+    font-weight: 700;
+    margin: 16px 0 6px;
+    letter-spacing: 1px;
+}
+
+.cmd {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+}
+
+.cmd pre {
+    color: var(--terminal-green);
+    margin: 0 0 8px;
+    font-size: 13px;
+}
+
+.cmd .desc {
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.no-results {
+    color: #777;
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer { text-align:center; color:#444; margin-top:26px; font-size:12px }
+
+@media (max-width:640px){
+    body{padding:18px}
+    h1.title{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1 class="title">Linux Commands</h1>
+        <p class="subtitle">Linux command cheat-sheet</p>
+    </header>
+
+    <div class="search-wrap">
+        <input id="q" type="search" placeholder="Search commands or descriptions...">
+    </div>
+
+    <div class="commands" id="commands">
+
+        <div class="section-title">Navigation</div>
+        <div class="cmd" data-terms="pwd current directory">
+            <pre>pwd</pre>
+            <div class="desc">Current directory</div>
+        </div>
+        <div class="cmd" data-terms="ls list files">
+            <pre>ls</pre>
+            <div class="desc">List files</div>
+        </div>
+        <div class="cmd" data-terms="ls -l long detailed list">
+            <pre>ls -l</pre>
+            <div class="desc">Detailed list</div>
+        </div>
+        <div class="cmd" data-terms="ls -la show hidden files">
+            <pre>ls -la</pre>
+            <div class="desc">Show hidden files too</div>
+        </div>
+        <div class="cmd" data-terms="ls -lh human readable sizes">
+            <pre>ls -lh</pre>
+            <div class="desc">Human-readable sizes</div>
+        </div>
+        <div class="cmd" data-terms="cd folder enter folder">
+            <pre>cd folder</pre>
+            <div class="desc">Enter folder</div>
+        </div>
+        <div class="cmd" data-terms="cd .. up one level parent">
+            <pre>cd ..</pre>
+            <div class="desc">Go up one level</div>
+        </div>
+        <div class="cmd" data-terms="cd ~ home">
+            <pre>cd ~</pre>
+            <div class="desc">Home directory</div>
+        </div>
+        <div class="cmd" data-terms="tree show folder structure">
+            <pre>tree</pre>
+            <div class="desc">Show folder structure</div>
+        </div>
+
+        <div class="section-title">Files & Folders</div>
+        <div class="cmd" data-terms="touch create file">
+            <pre>touch file.txt</pre>
+            <div class="desc">Create file</div>
+        </div>
+        <div class="cmd" data-terms="mkdir create folder">
+            <pre>mkdir folder</pre>
+            <div class="desc">Create folder</div>
+        </div>
+        <div class="cmd" data-terms="mkdir -p nested parents a b c">
+            <pre>mkdir -p a/b/c</pre>
+            <div class="desc">Create nested folders (parents)</div>
+        </div>
+        <div class="cmd" data-terms="cp copy file">
+            <pre>cp file backup</pre>
+            <div class="desc">Copy file</div>
+        </div>
+        <div class="cmd" data-terms="cp -r copy directory recursive">
+            <pre>cp -r folder backup</pre>
+            <div class="desc">Copy folder recursively</div>
+        </div>
+        <div class="cmd" data-terms="mv move rename">
+            <pre>mv old new</pre>
+            <div class="desc">Rename or move</div>
+        </div>
+        <div class="cmd" data-terms="rm remove delete file">
+            <pre>rm file</pre>
+            <div class="desc">Delete file</div>
+        </div>
+        <div class="cmd" data-terms="rm -r remove folder recursive">
+            <pre>rm -r folder</pre>
+            <div class="desc">Delete folder and contents</div>
+        </div>
+        <div class="cmd" data-terms="rm -rf force delete">
+            <pre>rm -rf folder</pre>
+            <div class="desc">Force delete (use with care)</div>
+        </div>
+        <div class="cmd" data-terms="rmdir remove empty folder">
+            <pre>rmdir folder</pre>
+            <div class="desc">Delete empty folder</div>
+        </div>
+
+        <div class="section-title">Viewing Files</div>
+        <div class="cmd" data-terms="cat display file">
+            <pre>cat file.txt</pre>
+            <div class="desc">Display file</div>
+        </div>
+        <div class="cmd" data-terms="less pager view page by page">
+            <pre>less file.txt</pre>
+            <div class="desc">View file page by page</div>
+        </div>
+        <div class="cmd" data-terms="more pager">
+            <pre>more file.txt</pre>
+            <div class="desc">Another pager</div>
+        </div>
+        <div class="cmd" data-terms="head head -n 20 preview top lines">
+            <pre>head file.txt
+head -n 20 file.txt</pre>
+            <div class="desc">Show top lines (optionally first 20)</div>
+        </div>
+        <div class="cmd" data-terms="tail tail -n follow logfile">
+            <pre>tail file.txt
+tail -n 20 file.txt
+tail -f logfile.log</pre>
+            <div class="desc">Tail file; follow live with -f</div>
+        </div>
+        <div class="cmd" data-terms="nl number lines">
+            <pre>nl file.txt</pre>
+            <div class="desc">Show line numbers</div>
+        </div>
+
+        <div class="section-title">Searching</div>
+        <div class="cmd" data-terms="find name pattern txt files">
+            <pre>find . -name "*.txt"</pre>
+            <div class="desc">Find files by name</div>
+        </div>
+        <div class="cmd" data-terms="find type f files only">
+            <pre>find . -type f</pre>
+            <div class="desc">Find files (type f)</div>
+        </div>
+        <div class="cmd" data-terms="grep search file case-insensitive recursive">
+            <pre>grep word file.txt
+grep -i word file.txt
+grep -r word folder</pre>
+            <div class="desc">Search inside files</div>
+        </div>
+        <div class="cmd" data-terms="locate which whereis">
+            <pre>locate firefox
+which firefox
+whereis firefox</pre>
+            <div class="desc">Locate binaries or packages</div>
+        </div>
+
+        <div class="section-title">Permissions</div>
+        <div class="cmd" data-terms="chmod executable 755 644">
+            <pre>chmod +x script.sh
+chmod 755 file
+chmod 644 file</pre>
+            <div class="desc">Change permissions</div>
+        </div>
+        <div class="cmd" data-terms="chown owner group">
+            <pre>chown user file
+chown user:group file</pre>
+            <div class="desc">Change owner and group</div>
+        </div>
+        <div class="cmd" data-terms="perm values 755 644 777 600">
+            <pre>755 = Owner full, others read+execute
+644 = Owner write, others read
+777 = Everyone everything
+600 = Private file</pre>
+            <div class="desc">Common permission meanings</div>
+        </div>
+
+        <div class="section-title">Processes</div>
+        <div class="cmd" data-terms="ps process list">
+            <pre>ps
+ps aux</pre>
+            <div class="desc">List processes</div>
+        </div>
+        <div class="cmd" data-terms="top htop interactive monitor">
+            <pre>top
+htop</pre>
+            <div class="desc">Interactive monitors</div>
+        </div>
+        <div class="cmd" data-terms="kill signal pkill pgrep">
+            <pre>kill PID
+kill -9 PID
+pkill firefox
+pgrep firefox</pre>
+            <div class="desc">Terminate or find processes</div>
+        </div>
+
+        <div class="section-title">System Information</div>
+        <div class="cmd" data-terms="uname hostname uptime whoami id">
+            <pre>uname -a
+hostname
+uptime
+whoami
+id</pre>
+            <div class="desc">Basic system and user info</div>
+        </div>
+        <div class="cmd" data-terms="memory disk df du lsblk lscpu neofetch">
+            <pre>free -h
+df -h
+du -sh folder
+lsblk
+lscpu
+neofetch</pre>
+            <div class="desc">Memory, disks and hardware info</div>
+        </div>
+
+        <div class="section-title">Networking</div>
+        <div class="cmd" data-terms="ping ip curl wget traceroute ss">
+            <pre>ping google.com
+ip a
+ip r
+curl https://example.com
+wget URL
+traceroute google.com
+ss -tulpn</pre>
+            <div class="desc">Common networking commands</div>
+        </div>
+
+        <div class="section-title">Archives</div>
+        <div class="cmd" data-terms="tar zip unzip compress">
+            <pre>tar -cvf archive.tar folder
+tar -xvf archive.tar
+
+tar -czvf archive.tar.gz folder
+tar -xzvf archive.tar.gz
+
+zip file.zip folder
+unzip file.zip</pre>
+            <div class="desc">Create and extract archives</div>
+        </div>
+
+        <div class="section-title">Pacman (EndeavourOS)</div>
+        <div class="cmd" data-terms="pacman update install remove search info list clean">
+            <pre>sudo pacman -Syu   # Update everything
+sudo pacman -S package
+sudo pacman -R package
+sudo pacman -Rns package
+pacman -Ss firefox
+pacman -Qs firefox
+pacman -Si firefox
+pacman -Qi firefox
+pacman -Q
+pacman -Qe
+pacman -Qdt
+sudo pacman -Sc
+sudo pacman -Scc</pre>
+            <div class="desc">Common pacman package manager commands</div>
+        </div>
+
+        <div class="section-title">Yay (AUR)</div>
+        <div class="cmd" data-terms="yay aur install remove search update">
+            <pre>yay -S package
+yay -R package
+yay -Ss package
+yay -Syu</pre>
+            <div class="desc">AUR helper commands</div>
+        </div>
+
+        <div class="section-title">Services (systemd)</div>
+        <div class="cmd" data-terms="systemctl start stop restart enable disable status">
+            <pre>systemctl status service
+sudo systemctl start service
+sudo systemctl stop service
+sudo systemctl restart service
+sudo systemctl enable service
+sudo systemctl disable service
+
+# Example
+sudo systemctl restart NetworkManager</pre>
+            <div class="desc">Manage systemd services</div>
+        </div>
+
+        <div class="section-title">Logs</div>
+        <div class="cmd" data-terms="journalctl logs -xe -u -f">
+            <pre>journalctl
+journalctl -xe
+journalctl -u service
+journalctl -f</pre>
+            <div class="desc">View systemd journal logs</div>
+        </div>
+
+        <div class="section-title">Disks</div>
+        <div class="cmd" data-terms="lsblk blkid mount umount df">
+            <pre>lsblk
+blkid
+mount
+umount /dev/sdb1
+df -h</pre>
+            <div class="desc">Disk and mount utilities</div>
+        </div>
+
+        <div class="section-title">Users</div>
+        <div class="cmd" data-terms="who w users useradd passwd userdel">
+            <pre>who
+w
+users
+sudo useradd bob
+sudo passwd bob
+sudo userdel bob</pre>
+            <div class="desc">User account and session commands</div>
+        </div>
+
+        <div class="section-title">SSH</div>
+        <div class="cmd" data-terms="ssh scp ssh-keygen ssh-copy-id">
+            <pre>ssh user@host
+scp file user@host:/folder
+ssh-keygen
+ssh-copy-id user@host</pre>
+            <div class="desc">Remote shell and key setup</div>
+        </div>
+
+        <div class="section-title">KDE Plasma</div>
+        <div class="cmd" data-terms="kquitapp6 plasmashell restart replace">
+            <pre>kquitapp6 plasmashell
+plasmashell &
+
+# or
+plasmashell --replace &</pre>
+            <div class="desc">Restart Plasma shell</div>
+        </div>
+
+        <div class="section-title">Hardware</div>
+        <div class="cmd" data-terms="lspci lsusb inxi sensors xrandr">
+            <pre>lspci
+lsusb
+inxi -F
+sensors
+xrandr</pre>
+            <div class="desc">Hardware inspection tools</div>
+        </div>
+
+        <div class="section-title">Git</div>
+        <div class="cmd" data-terms="git clone status add commit push pull">
+            <pre>git clone URL
+git status
+git add .
+git commit -m "message"
+git push
+git pull</pre>
+            <div class="desc">Common Git commands</div>
+        </div>
+
+        <div class="section-title">Useful Terminal Tricks</div>
+        <div class="cmd" data-terms="sudo background ctrlc ctrlz clear ctrll">
+            <pre>sudo command
+command &   # run in background
+# Stop current process: Ctrl+C
+# Suspend process: Ctrl+Z
+clear
+Ctrl+L</pre>
+            <div class="desc">Quick terminal tips</div>
+        </div>
+
+        <div class="section-title">Most Common Flags</div>
+        <div class="cmd" data-terms="flags -a -A -l -h -r -R -i -f -v -q -s -u -y -x -c -z -n -e -d -p --help --version">
+            <pre>-a  All
+-A  Almost all
+-l  Long listing
+-h  Human readable
+-r  Recursive / reverse
+-R  Recursive
+-i  Interactive
+-f  Force
+-v  Verbose
+-q  Quiet
+-s  Search / summarize
+-u  Update
+-y  Refresh databases
+-x  Extract
+-c  Create
+-z  Gzip
+-n  Number / no config
+-e  Enable
+-d  Delete / dependencies
+-p  Parents
+--help  Show help
+--version  Show version</pre>
+            <div class="desc">Common flags and meanings</div>
+        </div>
+
+    </div>
+
+    <div id="noresults" class="no-results" style="display:none">No commands match your query.</div>
+
+    <footer>Terminal-style cheat sheet</footer>
+</div>
+
+<script>
+    const q = document.getElementById('q');
+    const nodes = Array.from(document.querySelectorAll('.cmd'));
+    const noresults = document.getElementById('noresults');
+
+    function filter() {
+        const val = q.value.trim().toLowerCase();
+        let visible = 0;
+        nodes.forEach(n => {
+            const text = (n.dataset.terms + ' ' + n.textContent).toLowerCase();
+            if (!val || text.includes(val)) {
+                n.style.display = '';
+                visible++;
+            } else {
+                n.style.display = 'none';
+            }
+        });
+        noresults.style.display = visible ? 'none' : '';
+    }
+
+    q.addEventListener('input', filter);
+    q.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ q.value=''; filter(); } });
+</script>
+</body>
+</html>

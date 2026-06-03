@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Linux Commands</title>
+<style>
+:root {
+    --gold: #ffcc00;
+    --terminal-green: #00ff41;
+    --bg: #0a0a0a;
+    --border: #333;
+}
+
+body {
+    background-color: var(--bg);
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 36px;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px double var(--border);
+    padding-bottom: 18px;
+}
+
+h1.title {
+    color: var(--gold);
+    font-size: 26px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin: 8px 0 6px;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+
+.search-wrap {
+    margin: 18px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+input[type="search"] {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    color: #ddd;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.commands {
+    display: grid;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.cmd {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+}
+
+.cmd pre {
+    color: var(--terminal-green);
+    margin: 0 0 10px;
+    font-size: 13px;
+}
+
+.cmd .desc {
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.no-results {
+    color: #777;
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer { text-align:center; color:#444; margin-top:26px; font-size:12px }
+
+@media (max-width:640px){
+    body{padding:18px}
+    h1.title{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1 class="title">Linux Commands</h1>
+        <p class="subtitle">Here are some common Linux commands you need to know:</p>
+    </header>
+
+    <div class="search-wrap">
+        <input id="q" type="search" placeholder="Search commands or descriptions...">
+    </div>
+
+    <div class="commands" id="commands">
+        <div class="cmd" data-terms="pwd current directory">
+            <pre>pwd</pre>
+            <div class="desc">Shows your current directory.</div>
+        </div>
+
+        <div class="cmd" data-terms="ls list files">
+            <pre>ls</pre>
+            <div class="desc">Lists files.</div>
+        </div>
+
+        <div class="cmd" data-terms="ls -la hidden files long format">
+            <pre>ls -la</pre>
+            <div class="desc">Lists all files (including hidden ones) in a detailed format.</div>
+        </div>
+
+        <div class="cmd" data-terms="cd change directory foldername">
+            <pre>cd foldername</pre>
+            <div class="desc">Move into a folder.</div>
+        </div>
+
+        <div class="cmd" data-terms="cd .. up parent directory">
+            <pre>cd ..</pre>
+            <div class="desc">Go up one folder.</div>
+        </div>
+
+        <div class="cmd" data-terms="cd ~ home directory">
+            <pre>cd ~</pre>
+            <div class="desc">Go to your home directory.</div>
+        </div>
+
+        <div class="cmd" data-terms="cp copy file">
+            <pre>cp file.txt backup.txt</pre>
+            <div class="desc">Copy a file.</div>
+        </div>
+
+        <div class="cmd" data-terms="mv move rename file">
+            <pre>mv old.txt new.txt</pre>
+            <div class="desc">Rename or move a file.</div>
+        </div>
+
+        <div class="cmd" data-terms="rm remove delete file">
+            <pre>rm file.txt</pre>
+            <div class="desc">Delete a file.</div>
+        </div>
+
+        <div class="cmd" data-terms="rm -r remove directory recursive">
+            <pre>rm -r folder</pre>
+            <div class="desc">Delete a folder and everything inside it.</div>
+        </div>
+
+        <div class="cmd" data-terms="mkdir make directory create folder">
+            <pre>mkdir newfolder</pre>
+            <div class="desc">Create a folder.</div>
+        </div>
+
+        <div class="cmd" data-terms="touch create empty file">
+            <pre>touch file.txt</pre>
+            <div class="desc">Create an empty file.</div>
+        </div>
+
+        <div class="cmd" data-terms="cat display file">
+            <pre>cat file.txt</pre>
+            <div class="desc">Display a file.</div>
+        </div>
+
+        <div class="cmd" data-terms="less pager view page by page">
+            <pre>less file.txt</pre>
+            <div class="desc">View a file page by page.</div>
+        </div>
+
+        <div class="cmd" data-terms="nano editor simple text edit">
+            <pre>nano file.txt</pre>
+            <div class="desc">Simple terminal text editor.</div>
+        </div>
+
+        <div class="cmd" data-terms="grep search text file">
+            <pre>grep "search" file.txt</pre>
+            <div class="desc">Search for text.</div>
+        </div>
+
+        <div class="cmd" data-terms="htop interactive task manager">
+            <pre>htop</pre>
+            <div class="desc">Interactive task manager.</div>
+        </div>
+
+        <div class="cmd" data-terms="free -h ram memory usage">
+            <pre>free -h</pre>
+            <div class="desc">RAM usage (human-readable).</div>
+        </div>
+
+        <div class="cmd" data-terms="df -h disk disk usage">
+            <pre>df -h</pre>
+            <div class="desc">Disk usage (human-readable).</div>
+        </div>
+
+        <div class="cmd" data-terms="uname kernel system info">
+            <pre>uname -a</pre>
+            <div class="desc">Kernel/system information.</div>
+        </div>
+
+        <div class="cmd" data-terms="neofetch pretty system info">
+            <pre>neofetch</pre>
+            <div class="desc">Pretty system info (if installed).</div>
+        </div>
+    </div>
+
+    <div id="noresults" class="no-results" style="display:none">No commands match your query.</div>
+
+    <footer>Terminal-style cheat sheet</footer>
+</div>
+
+<script>
+    const q = document.getElementById('q');
+    const nodes = Array.from(document.querySelectorAll('.cmd'));
+    const noresults = document.getElementById('noresults');
+
+    function filter() {
+        const val = q.value.trim().toLowerCase();
+        let visible = 0;
+        nodes.forEach(n => {
+            const text = (n.dataset.terms + ' ' + n.textContent).toLowerCase();
+            if (!val || text.includes(val)) {
+                n.style.display = '';
+                visible++;
+            } else {
+                n.style.display = 'none';
+            }
+        });
+        noresults.style.display = visible ? 'none' : '';
+    }
+
+    q.addEventListener('input', filter);
+    q.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ q.value=''; filter(); } });
+</script>
+</body>
+</html>
