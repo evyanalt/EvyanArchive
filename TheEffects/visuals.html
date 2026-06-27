@@ -837,7 +837,426 @@ function drawStars(){
         ctx.fillRect(s.x,s.y,s.z*2,s.z*2);
     }
 }
+/////////////////////////////////////////////////
+// CRYSTAL GROWTH
+/////////////////////////////////////////////////
 
+let crystalPixels = [];
+let crystalStarted = false;
+
+function initCrystal(){
+
+    crystalPixels = [];
+
+    crystalPixels.push({
+        x: Math.floor(w/2),
+        y: Math.floor(h/2)
+    });
+
+    crystalStarted = true;
+}
+
+function drawCrystal(){
+
+    if(!crystalStarted){
+        initCrystal();
+    }
+
+    // Very slow fade
+    ctx.fillStyle = "rgba(0,0,0,0.01)";
+    ctx.fillRect(0,0,w,h);
+
+    const growths = 10;
+
+    for(let g=0; g<growths; g++){
+
+        const parent =
+        crystalPixels[
+            Math.floor(
+                Math.random()*crystalPixels.length
+            )
+        ];
+
+        const directions = [
+            [1,0],
+            [-1,0],
+            [0,1],
+            [0,-1],
+            [1,1],
+            [-1,-1],
+            [1,-1],
+            [-1,1]
+        ];
+
+        const dir =
+        directions[
+            Math.floor(
+                Math.random()*directions.length
+            )
+        ];
+
+        const nx = parent.x + dir[0]*4;
+        const ny = parent.y + dir[1]*4;
+
+        crystalPixels.push({
+            x:nx,
+            y:ny
+        });
+
+        const hue =
+        (crystalPixels.length * 0.2)
+        % 360;
+
+        ctx.fillStyle =
+        `hsl(${hue},100%,70%)`;
+
+        ctx.beginPath();
+        ctx.arc(nx,ny,2,0,Math.PI*2);
+        ctx.fill();
+    }
+}
+
+/////////////////////////////////////////////////
+// WEB MIND
+/////////////////////////////////////////////////
+
+const webNodes = Array.from({length:80},()=>({
+
+    x:Math.random()*w,
+    y:Math.random()*h,
+
+    dx:(Math.random()-.5)*2,
+    dy:(Math.random()-.5)*2
+
+}));
+
+const webConnections = [];
+
+function drawWebMind(){
+
+    ctx.fillStyle = "rgba(0,0,0,0.02)";
+    ctx.fillRect(0,0,w,h);
+
+    webNodes.forEach(a=>{
+
+        a.x += a.dx;
+        a.y += a.dy;
+
+        if(a.x<0||a.x>w)a.dx*=-1;
+        if(a.y<0||a.y>h)a.dy*=-1;
+
+        webNodes.forEach(b=>{
+
+            const dist =
+            Math.hypot(
+                a.x-b.x,
+                a.y-b.y
+            );
+
+            if(
+                dist < 50 &&
+                Math.random()<0.0005
+            ){
+
+                webConnections.push({
+                    a,b
+                });
+
+            }
+
+        });
+
+    });
+
+    webConnections.forEach(c=>{
+
+        ctx.strokeStyle =
+        "rgba(255,255,255,0.15)";
+
+        ctx.beginPath();
+        ctx.moveTo(
+            c.a.x,
+            c.a.y
+        );
+
+        ctx.lineTo(
+            c.b.x,
+            c.b.y
+        );
+
+        ctx.stroke();
+
+    });
+
+}
+/////////////////////////////////////////////////
+// DREAMING AI
+/////////////////////////////////////////////////
+
+const dreamWords = [
+
+    "memory",
+    "echo",
+    "signal",
+    "dream",
+    "organism",
+    "thought",
+    "error",
+    "chaos",
+    "void",
+    "future"
+
+];
+
+const dreamObjects = [];
+
+function drawDreamAI(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.08)";
+
+    ctx.fillRect(0,0,w,h);
+
+    if(
+        Math.random()<0.08 &&
+        dreamObjects.length<100
+    ){
+
+        dreamObjects.push({
+
+            text:
+            dreamWords[
+                Math.floor(
+                    Math.random()*
+                    dreamWords.length
+                )
+            ],
+
+            x:Math.random()*w,
+            y:h+50,
+
+            vx:
+            (Math.random()-.5),
+
+            vy:
+            -1-Math.random()
+
+        });
+
+    }
+
+    dreamObjects.forEach(o=>{
+
+        o.x+=o.vx;
+        o.y+=o.vy;
+
+        ctx.fillStyle=
+        `hsla(${
+            o.y*0.2
+        },100%,70%,0.8)`;
+
+        ctx.font =
+        "20px monospace";
+
+        ctx.fillText(
+            o.text,
+            o.x,
+            o.y
+        );
+
+    });
+
+}
+/////////////////////////////////////////////////
+// ANT COLONY
+/////////////////////////////////////////////////
+
+const ants =
+Array.from({length:500},()=>({
+
+    x:Math.random()*w,
+    y:Math.random()*h,
+
+    angle:
+    Math.random()*Math.PI*2
+
+}));
+
+function drawAnts(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.01)";
+
+    ctx.fillRect(0,0,w,h);
+
+    ants.forEach(a=>{
+
+        a.angle +=
+        (Math.random()-.5)*0.3;
+
+        a.x +=
+        Math.cos(a.angle)*2;
+
+        a.y +=
+        Math.sin(a.angle)*2;
+
+        if(a.x<0)a.x=w;
+        if(a.x>w)a.x=0;
+        if(a.y<0)a.y=h;
+        if(a.y>h)a.y=0;
+
+        ctx.fillStyle =
+        "rgba(255,255,255,0.05)";
+
+        ctx.fillRect(
+            a.x,
+            a.y,
+            1,
+            1
+        );
+
+    });
+
+}
+/////////////////////////////////////////////////
+// TENDRILS
+/////////////////////////////////////////////////
+
+const tendrils = [];
+
+for(let i=0;i<5;i++){
+
+    tendrils.push({
+
+        x:w/2,
+        y:h/2,
+
+        angle:
+        Math.random()*Math.PI*2,
+
+        life:0
+
+    });
+
+}
+
+function drawTendrils(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.03)";
+
+    ctx.fillRect(0,0,w,h);
+
+    const newParts=[];
+
+    tendrils.forEach(t=>{
+
+        const oldX=t.x;
+        const oldY=t.y;
+
+        t.angle +=
+        (Math.random()-.5)*0.4;
+
+        t.x +=
+        Math.cos(t.angle)*3;
+
+        t.y +=
+        Math.sin(t.angle)*3;
+
+        t.life++;
+
+        ctx.strokeStyle =
+        `hsla(${t.life},
+        100%,70%,0.5)`;
+
+        ctx.beginPath();
+
+        ctx.moveTo(oldX,oldY);
+        ctx.lineTo(t.x,t.y);
+
+        ctx.stroke();
+
+        if(
+            Math.random()<0.01 &&
+            tendrils.length<500
+        ){
+
+            newParts.push({
+
+                x:t.x,
+                y:t.y,
+
+                angle:
+                t.angle +
+                (Math.random()-.5),
+
+                life:t.life
+
+            });
+
+        }
+
+    });
+
+    tendrils.push(...newParts);
+
+}
+/////////////////////////////////////////////////
+// STAR WARP
+/////////////////////////////////////////////////
+
+const warpStars =
+Array.from({length:1000},()=>({
+
+    x:(Math.random()-.5)*w,
+    y:(Math.random()-.5)*h,
+    z:Math.random()*1000
+
+}));
+
+function drawWarp(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.2)";
+
+    ctx.fillRect(0,0,w,h);
+
+    warpStars.forEach(s=>{
+
+        s.z -= 10;
+
+        if(s.z<=0){
+
+            s.z=1000;
+
+            s.x=
+            (Math.random()-.5)*w;
+
+            s.y=
+            (Math.random()-.5)*h;
+        }
+
+        const px =
+        (s.x/s.z)*500+w/2;
+
+        const py =
+        (s.y/s.z)*500+h/2;
+
+        const size =
+        (1-s.z/1000)*4;
+
+        ctx.fillStyle="white";
+
+        ctx.fillRect(
+            px,
+            py,
+            size,
+            size
+        );
+
+    });
+
+}
 /////////////////////////////////////////////////
 // ANIMATE
 /////////////////////////////////////////////////
@@ -913,8 +1332,31 @@ function animate(){
         case "stars":
             drawStars();
             break;
-    }
 
+        case "crystal":
+            drawCrystal();
+            break;
+
+        case "webmind":
+            drawWebMind();
+            break;
+
+        case "tendrils":
+            drawTendrils();
+            break;
+
+        case "dreamai":
+            drawDreamAI();
+            break;
+
+        case "ants":
+            drawAnts();
+            break;
+
+        case "warp":
+            drawWarp();
+            break;
+    }
 }
 
 animate();
