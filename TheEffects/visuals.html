@@ -1258,6 +1258,1469 @@ function drawWarp(){
 
 }
 /////////////////////////////////////////////////
+// WATCHERS
+/////////////////////////////////////////////////
+
+const watchers = [];
+
+function drawWatchers(){
+
+    ctx.fillStyle = "rgba(0,0,0,0.03)";
+    ctx.fillRect(0,0,w,h);
+
+    if(
+        Math.random() < 0.01 &&
+        watchers.length < 300
+    ){
+
+        watchers.push({
+
+            x:Math.random()*w,
+            y:Math.random()*h,
+
+            size:
+            10+Math.random()*25
+
+        });
+
+    }
+
+    watchers.forEach(e=>{
+
+        ctx.fillStyle="white";
+
+        ctx.beginPath();
+        ctx.ellipse(
+            e.x,
+            e.y,
+            e.size,
+            e.size*0.6,
+            0,
+            0,
+            Math.PI*2
+        );
+        ctx.fill();
+
+        const angle =
+        Math.atan2(
+            mouse.y-e.y,
+            mouse.x-e.x
+        );
+
+        const px =
+        e.x +
+        Math.cos(angle)*
+        e.size*0.3;
+
+        const py =
+        e.y +
+        Math.sin(angle)*
+        e.size*0.3;
+
+        ctx.fillStyle="black";
+
+        ctx.beginPath();
+        ctx.arc(
+            px,
+            py,
+            e.size*0.25,
+            0,
+            Math.PI*2
+        );
+        ctx.fill();
+
+    });
+
+}
+/////////////////////////////////////////////////
+// DIGITAL FOREST
+/////////////////////////////////////////////////
+
+const branches = [];
+
+function spawnTree(x,y){
+
+    branches.push({
+
+        x,
+        y,
+
+        angle:-Math.PI/2,
+
+        length:5,
+
+        age:0
+
+    });
+
+}
+
+spawnTree(w/2,h);
+
+function drawForest(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.02)";
+
+    ctx.fillRect(0,0,w,h);
+
+    const newBranches=[];
+
+    branches.forEach(b=>{
+
+        const nx =
+        b.x +
+        Math.cos(b.angle)*
+        b.length;
+
+        const ny =
+        b.y +
+        Math.sin(b.angle)*
+        b.length;
+
+        ctx.strokeStyle =
+        `hsl(${100+b.age},
+        80%,60%)`;
+
+        ctx.beginPath();
+        ctx.moveTo(b.x,b.y);
+        ctx.lineTo(nx,ny);
+        ctx.stroke();
+
+        b.x=nx;
+        b.y=ny;
+
+        b.age++;
+
+        if(
+            Math.random()<0.01 &&
+            b.age<100
+        ){
+
+            newBranches.push({
+
+                x:nx,
+                y:ny,
+
+                angle:
+                b.angle+0.5,
+
+                length:b.length,
+
+                age:b.age
+
+            });
+
+            newBranches.push({
+
+                x:nx,
+                y:ny,
+
+                angle:
+                b.angle-0.5,
+
+                length:b.length,
+
+                age:b.age
+
+            });
+
+        }
+
+    });
+
+    branches.push(...newBranches);
+
+}
+/////////////////////////////////////////////////
+// DNA HELIX
+/////////////////////////////////////////////////
+
+let dnaT = 0;
+
+function drawDNA(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.08)";
+
+    ctx.fillRect(0,0,w,h);
+
+    for(let y=0;y<h;y+=8){
+
+        const x1 =
+        w/2 +
+        Math.sin(
+            y*0.02+dnaT
+        )*150;
+
+        const x2 =
+        w/2 +
+        Math.sin(
+            y*0.02+dnaT+Math.PI
+        )*150;
+
+        ctx.strokeStyle =
+        `hsl(${y*0.5},
+        100%,70%)`;
+
+        ctx.beginPath();
+        ctx.moveTo(x1,y);
+        ctx.lineTo(x2,y);
+        ctx.stroke();
+
+        ctx.fillStyle="white";
+
+        ctx.beginPath();
+        ctx.arc(x1,y,2,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x2,y,2,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    dnaT += 0.03;
+}
+/////////////////////////////////////////////////
+// DIGITAL AQUARIUM
+/////////////////////////////////////////////////
+
+const fish =
+Array.from({length:40},()=>({
+
+    x:Math.random()*w,
+    y:Math.random()*h,
+
+    angle:
+    Math.random()*Math.PI*2
+
+}));
+
+function drawAquarium(){
+
+    ctx.fillStyle =
+    "rgba(0,20,40,0.08)";
+
+    ctx.fillRect(0,0,w,h);
+
+    fish.forEach(f=>{
+
+        f.angle +=
+        (Math.random()-.5)*0.1;
+
+        f.x +=
+        Math.cos(f.angle)*2;
+
+        f.y +=
+        Math.sin(f.angle)*2;
+
+        if(f.x<0)f.x=w;
+        if(f.x>w)f.x=0;
+        if(f.y<0)f.y=h;
+        if(f.y>h)f.y=0;
+
+        ctx.strokeStyle =
+        "cyan";
+
+        ctx.beginPath();
+        ctx.moveTo(f.x,f.y);
+
+        ctx.lineTo(
+            f.x-
+            Math.cos(f.angle)*20,
+
+            f.y-
+            Math.sin(f.angle)*20
+        );
+
+        ctx.stroke();
+    });
+
+}
+/////////////////////////////////////////////////
+// TIME ECHOES
+/////////////////////////////////////////////////
+
+const echoes = [];
+
+function drawEchoes(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.04)";
+
+    ctx.fillRect(0,0,w,h);
+
+    echoes.push({
+
+        x:mouse.x,
+        y:mouse.y,
+
+        life:100
+
+    });
+
+    echoes.forEach(e=>{
+
+        e.life--;
+
+        ctx.fillStyle =
+        `rgba(
+            255,
+            255,
+            255,
+            ${e.life/100}
+        )`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            e.x,
+            e.y,
+            10,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    });
+
+    while(
+        echoes.length>300
+    ){
+        echoes.shift();
+    }
+
+}
+let fireflies = [];
+
+for(let i=0;i<300;i++){
+
+    fireflies.push({
+
+        x:Math.random()*w,
+        y:Math.random()*h,
+
+        vx:(Math.random()-.5)*2,
+        vy:(Math.random()-.5)*2
+
+    });
+
+}
+
+function drawFireflies(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.05)";
+
+    ctx.fillRect(0,0,w,h);
+
+    fireflies.forEach(p=>{
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if(p.x<0||p.x>w)p.vx*=-1;
+        if(p.y<0||p.y>h)p.vy*=-1;
+
+        const dx =
+        mouse.x-p.x;
+
+        const dy =
+        mouse.y-p.y;
+
+        const d =
+        Math.hypot(dx,dy);
+
+        if(d<250){
+
+            p.vx += dx*0.0003;
+            p.vy += dy*0.0003;
+
+        }
+
+        ctx.strokeStyle =
+        `hsla(${d},
+        100%,70%,0.2)`;
+
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+
+        ctx.lineTo(
+            p.x-p.vx*15,
+            p.y-p.vy*15
+        );
+
+        ctx.stroke();
+
+    });
+
+}
+let orbitalBloomPhase = 0;
+
+function drawOrbitalBloom(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.1)";
+
+    ctx.fillRect(0,0,w,h);
+
+    for(let i=0;i<150;i++){
+
+        const a =
+        i*0.3 +
+        orbitalBloomPhase;
+
+        const r =
+        Math.sin(
+            i*0.2+
+            orbitalBloomPhase
+        )*200;
+
+        const x =
+        w/2+
+        Math.cos(a)*r;
+
+        const y =
+        h/2+
+        Math.sin(a)*r;
+
+        ctx.fillStyle =
+        `hsl(${
+            i*4+
+            orbitalBloomPhase*100
+        },100%,70%)`;
+
+        ctx.fillRect(
+            x,
+            y,
+            4,
+            4
+        );
+    }
+
+    orbitalBloomPhase += 0.01;
+
+}
+const resonancePoints = [];
+
+function drawResonance(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.02)";
+
+    ctx.fillRect(0,0,w,h);
+
+    if(
+        Math.random()<0.2 &&
+        resonancePoints.length<2000
+    ){
+
+        resonancePoints.push({
+
+            x:Math.random()*w,
+            y:Math.random()*h,
+
+            size:2
+
+        });
+
+    }
+
+    resonancePoints.forEach(p=>{
+
+        p.size += 0.05;
+
+        ctx.strokeStyle =
+        `rgba(
+            255,
+            255,
+            255,
+            ${1-p.size/100}
+        )`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.stroke();
+
+    });
+
+}
+let wanderers = [];
+
+for(let i=0;i<40;i++){
+
+    wanderers.push({
+
+        x:Math.random()*w,
+        y:Math.random()*h,
+
+        tx:Math.random()*w,
+        ty:Math.random()*h
+
+    });
+
+}
+
+function drawWanderers(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.08)";
+
+    ctx.fillRect(0,0,w,h);
+
+    wanderers.forEach(p=>{
+
+        p.x +=
+        (p.tx-p.x)*0.01;
+
+        p.y +=
+        (p.ty-p.y)*0.01;
+
+        if(
+            Math.hypot(
+                p.tx-p.x,
+                p.ty-p.y
+            )<10
+        ){
+
+            p.tx=
+            Math.random()*w;
+
+            p.ty=
+            Math.random()*h;
+        }
+
+        ctx.fillStyle =
+        "white";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            3,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    });
+
+}
+let fluxFieldTime = 0;
+
+function drawFluxField(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.15)";
+
+    ctx.fillRect(0,0,w,h);
+
+    const size = 30;
+
+    for(
+        let x=0;
+        x<w;
+        x+=size
+    ){
+
+        for(
+            let y=0;
+            y<h;
+            y+=size
+        ){
+
+            const v =
+            Math.sin(
+                x*0.02+
+                fluxFieldTime
+            ) +
+            Math.cos(
+                y*0.02+
+                fluxFieldTime
+            );
+
+            ctx.fillStyle =
+            `hsl(${
+                v*100+
+                fluxFieldTime*100
+            },100%,60%)`;
+
+            ctx.fillRect(
+                x,
+                y,
+                size,
+                size
+            );
+        }
+    }
+
+    fluxFieldTime += 0.01;
+
+}
+const haloSystemPoints = [];
+
+for(let i=0;i<150;i++){
+
+    haloSystemPoints.push({
+
+        angle:
+        Math.random()*
+        Math.PI*2,
+
+        radius:
+        Math.random()*300
+
+    });
+
+}
+
+function drawHaloSystem(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.04)";
+
+    ctx.fillRect(0,0,w,h);
+
+    haloSystemPoints.forEach(p=>{
+
+        p.angle += 0.01;
+
+        const x =
+        w/2+
+        Math.cos(
+            p.angle
+        )*
+        p.radius;
+
+        const y =
+        h/2+
+        Math.sin(
+            p.angle
+        )*
+        p.radius;
+
+        ctx.fillStyle =
+        `hsl(${
+            p.radius
+        },100%,70%)`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            2,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    });
+
+}
+/////////////////////////////////////////////////
+// INFINITE LOADING
+/////////////////////////////////////////////////
+
+const loaders = [];
+
+for(let i=0;i<3;i++){
+
+    loaders.push({
+
+        x:Math.random()*w,
+        y:Math.random()*h,
+
+        progress:Math.random()*100
+
+    });
+
+}
+
+function drawInfiniteLoading(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.08)";
+    ctx.fillRect(0,0,w,h);
+
+    loaders.forEach(l=>{
+
+        l.progress +=
+        Math.random()*0.4;
+
+        if(l.progress>99){
+
+            l.progress = 0;
+
+            if(loaders.length<100){
+
+                loaders.push({
+
+                    x:l.x+
+                    Math.random()*100-50,
+
+                    y:l.y+
+                    Math.random()*100-50,
+
+                    progress:0
+
+                });
+
+            }
+
+        }
+
+        ctx.strokeStyle="white";
+
+        ctx.strokeRect(
+            l.x,
+            l.y,
+            120,
+            15
+        );
+
+        ctx.fillStyle="#00ff88";
+
+        ctx.fillRect(
+            l.x,
+            l.y,
+            l.progress,
+            15
+        );
+
+    });
+
+}
+/////////////////////////////////////////////////
+// DESKTOP COLLAPSE
+/////////////////////////////////////////////////
+
+const windows98 = [];
+
+function drawDesktopCollapse(){
+
+    ctx.fillStyle =
+    "rgba(0,0,20,0.1)";
+    ctx.fillRect(0,0,w,h);
+
+    if(
+        Math.random()<0.03 &&
+        windows98.length<200
+    ){
+
+        windows98.push({
+
+            x:Math.random()*w,
+            y:-50,
+
+            text:
+            [
+                "Error",
+                "Warning",
+                "Explorer",
+                "Help"
+            ][
+                Math.floor(
+                    Math.random()*4
+                )
+            ]
+
+        });
+
+    }
+
+    windows98.forEach(win=>{
+
+        win.y += 1;
+
+        ctx.fillStyle =
+        "#c0c0c0";
+
+        ctx.fillRect(
+            win.x,
+            win.y,
+            120,
+            80
+        );
+
+        ctx.fillStyle =
+        "#000080";
+
+        ctx.fillRect(
+            win.x,
+            win.y,
+            120,
+            20
+        );
+
+        ctx.fillStyle =
+        "white";
+
+        ctx.fillText(
+            win.text,
+            win.x+5,
+            win.y+14
+        );
+
+    });
+
+}
+/////////////////////////////////////////////////
+// VOID BLOOM
+/////////////////////////////////////////////////
+
+let bloomT = 0;
+
+function drawVoidBloom(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,w,h);
+
+    for(let i=0;i<300;i++){
+
+        const a =
+        i*0.2+bloomT;
+
+        const r =
+        Math.sin(
+            i*0.1+bloomT
+        )*250;
+
+        const x =
+        w/2+
+        Math.cos(a)*r;
+
+        const y =
+        h/2+
+        Math.sin(a)*r;
+
+        ctx.fillStyle =
+        `hsla(${
+            i+bloomT*50
+        },100%,70%,0.5)`;
+
+        ctx.fillRect(
+            x,
+            y,
+            3,
+            3
+        );
+
+    }
+
+    bloomT += 0.01;
+
+}
+/////////////////////////////////////////////////
+// LIGHTNING NETWORK
+/////////////////////////////////////////////////
+
+function drawLightningNetwork(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.15)";
+    ctx.fillRect(0,0,w,h);
+
+    for(let i=0;i<25;i++){
+
+        let x =
+        Math.random()*w;
+
+        let y =
+        Math.random()*h;
+
+        ctx.beginPath();
+        ctx.moveTo(x,y);
+
+        for(let j=0;j<20;j++){
+
+            x +=
+            Math.random()*40-20;
+
+            y +=
+            Math.random()*40-20;
+
+            ctx.lineTo(x,y);
+
+        }
+
+        ctx.strokeStyle =
+        `hsla(${
+            Math.random()*360
+        },100%,70%,0.5)`;
+
+        ctx.stroke();
+
+    }
+
+}
+/////////////////////////////////////////////////
+// RUNE STORM
+/////////////////////////////////////////////////
+
+const runes =
+"ᚠᚱᚢᚷᚹᚺᚾᛁᛃᛇᛈᛉ✦✧◈◇";
+
+function drawRuneStorm(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.08)";
+    ctx.fillRect(0,0,w,h);
+
+    ctx.font =
+    "24px serif";
+
+    for(let i=0;i<100;i++){
+
+        ctx.fillStyle =
+        `hsla(${
+            Date.now()*0.02+i*10
+        },100%,70%,0.8)`;
+
+        ctx.fillText(
+
+            runes[
+                Math.floor(
+                    Math.random()*
+                    runes.length
+                )
+            ],
+
+            Math.random()*w,
+            Math.random()*h
+
+        );
+
+    }
+
+}
+/////////////////////////////////////////////////
+// MIRROR POOL
+/////////////////////////////////////////////////
+
+let mirrorT = 0;
+
+function drawMirrorPool(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.08)";
+    ctx.fillRect(0,0,w,h);
+
+    for(let y=0;y<h;y+=10){
+
+        const wave =
+        Math.sin(
+            y*0.05+
+            mirrorT
+        )*30;
+
+        ctx.drawImage(
+
+            canvas,
+
+            0,
+            y,
+
+            w,
+            10,
+
+            wave,
+            y,
+
+            w,
+            10
+
+        );
+
+    }
+
+    mirrorT += 0.02;
+
+}
+/////////////////////////////////////////////////
+// FAKE BIOS
+/////////////////////////////////////////////////
+
+let biosLines = [];
+
+function drawFakeBIOS(){
+
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,w,h);
+
+    if(
+        Math.random()<0.1 &&
+        biosLines.length<100
+    ){
+
+        biosLines.push(
+
+            "Checking memory..." +
+            Math.floor(
+                Math.random()*9999
+            )
+
+        );
+
+    }
+
+    ctx.fillStyle =
+    "#00ff00";
+
+    ctx.font =
+    "16px monospace";
+
+    biosLines.forEach(
+        (line,i)=>{
+
+        ctx.fillText(
+            line,
+            20,
+            30+i*18
+        );
+
+    });
+
+}
+/////////////////////////////////////////////////
+// NEBULA
+/////////////////////////////////////////////////
+
+function drawNebula(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.03)";
+    ctx.fillRect(0,0,w,h);
+
+    for(let i=0;i<40;i++){
+
+        const g =
+        ctx.createRadialGradient(
+
+            Math.random()*w,
+            Math.random()*h,
+
+            0,
+
+            Math.random()*w,
+            Math.random()*h,
+
+            300
+
+        );
+
+        g.addColorStop(
+            0,
+            `hsla(${
+                Math.random()*360
+            },100%,70%,0.08)`
+        );
+
+        g.addColorStop(
+            1,
+            "transparent"
+        );
+
+        ctx.fillStyle=g;
+        ctx.fillRect(0,0,w,h);
+
+    }
+
+}
+/////////////////////////////////////////////////
+// LOST SCREENSAVER
+/////////////////////////////////////////////////
+
+let lostMode = 0;
+let lostTimer = 0;
+
+function drawLostScreensaver(){
+
+    lostTimer++;
+
+    if(lostTimer > 300){
+
+        lostTimer = 0;
+        lostMode = Math.floor(Math.random()*6);
+
+    }
+
+    switch(lostMode){
+
+        case 0:
+            drawStars();
+            break;
+
+        case 1:
+            drawMatrix();
+            break;
+
+        case 2:
+            drawGrid();
+            break;
+
+        case 3:
+            drawWarp();
+            break;
+
+        case 4:
+            drawEchoes();
+            break;
+
+        case 5:
+            drawRuneStorm();
+            break;
+
+    }
+
+}
+/////////////////////////////////////////////////
+// ANCIENT CRT
+/////////////////////////////////////////////////
+
+let crtNoise = [];
+
+for(let i=0;i<3000;i++){
+
+    crtNoise.push({
+        x:Math.random()*w,
+        y:Math.random()*h
+    });
+
+}
+
+function drawAncientCRT(){
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,w,h);
+
+    crtNoise.forEach(p=>{
+
+        if(Math.random()<0.02){
+
+            p.x=Math.random()*w;
+            p.y=Math.random()*h;
+
+        }
+
+        ctx.fillStyle=
+        `rgba(255,255,255,${
+            Math.random()*0.2
+        })`;
+
+        ctx.fillRect(
+            p.x,
+            p.y,
+            1,
+            1
+        );
+
+    });
+
+    for(let y=0;y<h;y+=3){
+
+        ctx.fillStyle=
+        "rgba(0,0,0,0.15)";
+
+        ctx.fillRect(
+            0,y,w,1
+        );
+
+    }
+
+}
+/////////////////////////////////////////////////
+// DVD APOCALYPSE
+/////////////////////////////////////////////////
+
+const dvds = [];
+
+for(let i=0;i<50;i++){
+
+    dvds.push({
+
+        x:Math.random()*w,
+        y:Math.random()*h,
+
+        vx:(Math.random()-.5)*8,
+        vy:(Math.random()-.5)*8
+
+    });
+
+}
+
+function drawDVDApocalypse(){
+
+    ctx.fillStyle=
+    "rgba(0,0,0,0.15)";
+    ctx.fillRect(0,0,w,h);
+
+    dvds.forEach(d=>{
+
+        d.x+=d.vx;
+        d.y+=d.vy;
+
+        if(d.x<0||d.x>w)
+            d.vx*=-1;
+
+        if(d.y<0||d.y>h)
+            d.vy*=-1;
+
+        ctx.fillStyle=
+        `hsl(${
+            d.x+d.y
+        },100%,70%)`;
+
+        ctx.fillText(
+            "DVD",
+            d.x,
+            d.y
+        );
+
+    });
+
+}
+/////////////////////////////////////////////////
+// WALLPAPER.EXE
+/////////////////////////////////////////////////
+
+let wallpaperTime = 0;
+
+function drawWallpaperExe(){
+
+    wallpaperTime++;
+
+    ctx.fillStyle=
+    `hsl(${
+        wallpaperTime*0.3
+    },100%,5%)`;
+
+    ctx.fillRect(0,0,w,h);
+
+    for(let i=0;i<50;i++){
+
+        const x=
+        Math.sin(
+            i+
+            wallpaperTime*0.01
+        )*300+w/2;
+
+        const y=
+        Math.cos(
+            i+
+            wallpaperTime*0.02
+        )*300+h/2;
+
+        ctx.strokeStyle=
+        `hsla(${
+            i*20+
+            wallpaperTime
+        },100%,70%,0.5)`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,y,
+            30+
+            Math.sin(
+                wallpaperTime*0.05+i
+            )*20,
+            0,
+            Math.PI*2
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+/////////////////////////////////////////////////
+// DIGITAL RAINFOREST
+/////////////////////////////////////////////////
+
+const leaves=[];
+
+function drawDigitalRainforest(){
+
+    ctx.fillStyle=
+    "rgba(0,10,0,0.08)";
+    ctx.fillRect(0,0,w,h);
+
+    if(
+        Math.random()<0.3 &&
+        leaves.length<1000
+    ){
+
+        leaves.push({
+
+            x:Math.random()*w,
+            y:h,
+
+            vy:-(1+Math.random()*2),
+
+            size:5+Math.random()*20
+
+        });
+
+    }
+
+    leaves.forEach(l=>{
+
+        l.y+=l.vy;
+
+        ctx.fillStyle=
+        `hsla(${
+            100+
+            Math.random()*40
+        },100%,60%,0.4)`;
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            l.x,
+            l.y,
+            l.size,
+            l.size/2,
+            Math.sin(l.y*0.01),
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    });
+
+}
+/////////////////////////////////////////////////
+// BLACK SUN
+/////////////////////////////////////////////////
+
+let sunT = 0;
+
+function drawBlackSun(){
+
+    ctx.fillStyle=
+    "rgba(0,0,0,0.08)";
+    ctx.fillRect(0,0,w,h);
+
+    const r = 150;
+
+    ctx.fillStyle="black";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        w/2,
+        h/2,
+        r,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    for(let i=0;i<200;i++){
+
+        const a=
+        i*0.1+
+        sunT;
+
+        const dist=
+        r+
+        Math.sin(
+            i+sunT
+        )*50;
+
+        const x=
+        w/2+
+        Math.cos(a)*dist;
+
+        const y=
+        h/2+
+        Math.sin(a)*dist;
+
+        ctx.fillStyle=
+        `hsl(${
+            i*3
+        },100%,70%)`;
+
+        ctx.fillRect(
+            x,
+            y,
+            2,
+            2
+        );
+
+    }
+
+    sunT+=0.01;
+
+}
+/////////////////////////////////////////////////
+// SIGNAL SCANNER
+/////////////////////////////////////////////////
+
+let scan = 0;
+
+function drawSignalScanner(){
+
+    ctx.fillStyle=
+    "rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,w,h);
+
+    scan += 4;
+
+    if(scan>w)
+        scan=0;
+
+    ctx.strokeStyle=
+    "#00ff88";
+
+    ctx.beginPath();
+
+    ctx.moveTo(scan,0);
+    ctx.lineTo(scan,h);
+
+    ctx.stroke();
+
+    for(let i=0;i<20;i++){
+
+        ctx.fillStyle=
+        "#00ff88";
+
+        ctx.fillRect(
+
+            Math.random()*w,
+
+            h/2+
+            Math.sin(
+                i+Date.now()*0.005
+            )*100,
+
+            2,
+            2
+
+        );
+
+    }
+
+}
+
+/////////////////////////////////////////////////
 // ANIMATE
 /////////////////////////////////////////////////
 
@@ -1356,7 +2819,109 @@ function animate(){
         case "warp":
             drawWarp();
             break;
+        case "watchers":
+            drawWatchers();
+            break;
+
+        case "forest":
+            drawForest();
+            break;
+
+        case "dna":
+            drawDNA();
+            break;
+
+        case "aquarium":
+            drawAquarium();
+            break;
+
+        case "echoes":
+            drawEchoes();
+            break;
+        case "Fireflies":
+            drawFireflies();
+            break;
+
+        case "Orbital Bloom":
+            drawOrbitalBloom();
+            break;
+
+        case "Resonance":
+            drawResonance();
+            break;
+
+        case "Wanderers":
+            drawWanderers();
+            break;
+
+        case "Flux Field":
+            drawFluxField();
+            break;
+
+        case "Halo System":
+            drawHaloSystem();
+            break;
+        case "loading":
+    drawInfiniteLoading();
+    break;
+
+        case "collapse":
+    drawDesktopCollapse();
+    break;
+
+        case "bloom":
+    drawVoidBloom();
+    break;
+
+        case "lightning":
+    drawLightningNetwork();
+    break;
+
+case "runes":
+    drawRuneStorm();
+    break;
+
+case "mirror":
+    drawMirrorPool();
+    break;
+
+case "bios":
+    drawFakeBIOS();
+    break;
+
+case "nebula":
+    drawNebula();
+    break;
+    case "lost":
+    drawLostScreensaver();
+    break;
+
+case "crt":
+    drawAncientCRT();
+    break;
+
+case "dvd":
+    drawDVDApocalypse();
+    break;
+
+case "wallpaper":
+    drawWallpaperExe();
+    break;
+
+case "rainforest":
+    drawDigitalRainforest();
+    break;
+
+case "blacksun":
+    drawBlackSun();
+    break;
+
+case "scanner":
+    drawSignalScanner();
+    break;
+    
     }
+    
 }
 
 animate();
