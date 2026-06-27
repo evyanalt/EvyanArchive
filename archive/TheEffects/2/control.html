@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaos Control</title>
+
+<style>
+:root{
+    --bg:#111;
+    --panel:#1b1b1b;
+    --border:#333;
+    --text:#fff;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,sans-serif;
+}
+
+.panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:16px;
+}
+
+h1{
+    margin-top:0;
+}
+
+button,
+select,
+input{
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#222;
+    color:white;
+}
+
+button:hover{
+    cursor:pointer;
+    background:#2b2b2b;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+}
+
+.row button{
+    flex:1;
+}
+
+details{
+    margin-top:10px;
+}
+
+#currentMode{
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="panel">
+    <h1>Chaos Control</h1>
+
+    Current Mode:
+    <span id="currentMode">None</span>
+</div>
+
+<div class="panel">
+    <h3>Favorites</h3>
+
+    <button onclick="setMode('organism')">
+        Organism
+    </button>
+
+    <button onclick="setMode('swarm')">
+        Swarm
+    </button>
+
+    <button onclick="setMode('bionet')">
+        Bio Net
+    </button>
+
+    <button onclick="setMode('cells')">
+        Void Cells
+    </button>
+</div>
+
+<div class="panel">
+
+    <h3>All Modes</h3>
+
+    <select id="modeSelect">
+
+        <option value="organism">
+            Organism
+        </option>
+
+        <option value="swarm">
+            Swarm
+        </option>
+
+        <option value="bionet">
+            Bio Net
+        </option>
+
+        <option value="cells">
+            Void Cells
+        </option>
+
+        <option value="recursive">
+            Recursive
+        </option>
+
+        <option value="fracture">
+            Fracture
+        </option>
+
+        <option value="vhs">
+            VHS
+        </option>
+
+        <option value="vhs1">
+            VHS 1
+        </option>
+
+        <option value="ascii">
+            ASCII
+        </option>
+
+        <option value="storm">
+            Storm
+        </option>
+
+        <option value="glitch">
+            Glitch
+        </option>
+        <option value="matrix">
+            Matrix
+        </option>
+        <option value="maze">
+            Maze
+        </option>
+        <option value="terminal">
+            Terminal
+        </option>
+        <option value="xp">
+            XP
+        </option>
+        <option value="grid">
+            Grid
+        </option>
+        <option value="stars">
+            Stars
+        </option>
+        <option value="crystal">
+            Crystal
+        </option>
+        <option value="webmind">
+            Web Mind
+        </option>
+        <option value="tendrils">
+            Tendrils
+        </option>
+        <option value="dreamai">
+            Dream AI
+        </option>
+        <option value="ants">
+            Ants
+        </option>
+        <option value="warp">
+            Warp
+        </option>
+        <option value="watchers">
+            Watchers
+        </option>
+        <option value="forest">
+            Forest
+        </option>
+        <option value="dna">
+            DNA
+        </option>
+        <option value="aquarium">
+            Aquarium
+        </option>
+        <option value="echoes">
+            Echoes
+        </option>
+        <option value="Fireflies">
+            Fireflies
+        </option>
+        <option value="Orbital Bloom">
+            Orbital Bloom
+        </option>
+        <option value="Resonance">
+            Resonance
+        </option>
+        <option value="Wanderers">
+            Wanderers
+        </option>
+        <option value="Flux Field">
+            Flux Field
+        </option>
+        <option value="Halo System">
+            Halo System
+        </option>
+        <option value="loading">
+            Loading
+        </option>
+        <option value="collapse">
+            Collapse
+        </option>
+        <option value="bloom">
+            Bloom
+        </option>
+        <option value="lightning">
+            Lightning
+        </option>
+        <option value="runes">
+            Runes
+        </option>
+        <option value="mirror">
+            Mirror
+        </option>
+        <option value="bios">
+            BIOS
+        </option>
+        <option value="nebula">
+            Nebula
+        </option>
+        <option value="lost">
+            Lost
+        </option>
+        <option value="crt">
+            CRT
+        </option>
+        <option value="dvd">
+            DVD
+        </option>
+        <option value="wallpaper">
+            Wallpaper
+        </option>
+        <option value="rainforest">
+            Rainforest
+        </option>
+        <option value="blacksun">
+            Black Sun
+        </option>
+        <option value="scanner">
+            Scanner
+        </option>
+        <option value="garden">
+            Garden
+        </option>
+        <option value="fossils">
+            Fossils
+        </option>
+        <option value="leak">
+            Leak
+        </option>
+        <option value="archive">
+            Archive
+        </option>
+        <option value="ghosts">
+            Ghosts
+        </option>
+        <option value="internetweather">
+            Internet Weather
+        </option>
+        <option value="artificialweather">
+            Artificial Weather
+        </option>
+        <option value="dream">
+            Dream
+        </option>
+    </select>
+
+    <button onclick="applySelected()">
+        Apply
+    </button>
+
+</div>
+
+<div class="panel">
+
+    <div class="row">
+
+        <button onclick="randomMode()">
+            Random
+        </button>
+
+        <button onclick="toggleAutoplay()"
+                id="autoBtn">
+            Autoplay OFF
+        </button>
+
+    </div>
+
+</div>
+<script>
+
+const channel =
+    new BroadcastChannel("chaos");
+
+let currentMode = null;
+
+function setMode(mode){
+
+    currentMode = mode;
+
+    document.getElementById(
+        "currentMode"
+    ).textContent = mode;
+
+    channel.postMessage({
+        mode
+    });
+
+}
+
+function applySelected(){
+
+    const mode =
+    document.getElementById(
+        "modeSelect"
+    ).value;
+
+    setMode(mode);
+
+}
+
+const modes = [
+
+    "organism",
+    "swarm",
+    "bionet",
+    "cells",
+    "recursive",
+    "fracture",
+    "vhs",
+    "ascii",
+    "storm",
+    "glitch",
+    "matrix",
+    "maze",
+    "vhs",
+    "terminal",
+    "xp",
+    "grid",
+    "stars",
+    "crystal",
+    "webmind",
+    "tendrils",
+    "dreamai",
+    "ants",
+    "warp",
+    "tendrils",
+    "watchers",
+    "forest",
+    "dna",
+    "aquarium",
+    "echoes",
+    "Fireflies",
+    "Orbital Bloom",
+    "Resonance",
+    "Wanderers",
+    "Flux Field",
+    "Halo System",
+    "loading",
+    "collapse",
+    "bloom",
+    "lightning",
+    "runes",
+    "mirror",
+    "bios",
+    "nebula",
+    "lost",
+    "crt",
+    "dvd",
+    "wallpaper",
+    "rainforest",
+    "blacksun",
+    "scanner",
+    "garden",
+    "fossils",
+    "leak",
+    "archive",
+    "ghosts",
+    "internetweather",
+    "artificialweather",
+    "dream"
+
+];
+
+function randomMode(){
+
+    const mode =
+    modes[
+        Math.floor(
+            Math.random() *
+            modes.length
+        )
+    ];
+
+    setMode(mode);
+
+}
+
+let autoplay = false;
+let autoplayTimer = null;
+
+function toggleAutoplay(){
+
+    autoplay = !autoplay;
+
+    const btn =
+    document.getElementById(
+        "autoBtn"
+    );
+
+    if(autoplay){
+
+        btn.textContent =
+            "Autoplay ON";
+
+        autoplayTimer =
+        setInterval(
+            randomMode,
+            30000
+        );
+
+    }else{
+
+        btn.textContent =
+            "Autoplay OFF";
+
+        clearInterval(
+            autoplayTimer
+        );
+
+    }
+
+}
+
+randomMode();
+
+</script>
+
+</body>
+</html>
