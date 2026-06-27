@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borderless PWA Demo</title>
+  <!-- Link to the app configurations -->
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background-color: #1e1e24;
+      color: #ffffff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* This bar handles dragging the window and sits where the native frame used to be */
+    .custom-titlebar {
+      background-color: #2a2a35;
+      color: #a0a0a0;
+      display: flex;
+      align-items: center;
+      padding-left: 15px;
+      font-size: 14px;
+      
+      /* Tells OS that clicking and dragging here will move the window */
+      -webkit-app-region: drag;
+      app-region: drag;
+
+      /* Automatically sizes the bar to perfectly match the system title bar area */
+      position: fixed;
+      top: env(titlebar-area-y, 0px);
+      left: env(titlebar-area-x, 0px);
+      width: env(titlebar-area-width, 100%);
+      height: env(titlebar-area-height, 40px);
+    }
+
+    .main-content {
+      /* Pushes down the content so it does not get covered by the title bar */
+      margin-top: env(titlebar-area-height, 40px);
+      padding: 30px;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- The draggable custom window top header -->
+  <div class="custom-titlebar">
+    <span>My Borderless Application</span>
+  </div>
+
+  <!-- Main layout frame -->
+  <div class="main-content">
+    <h1>Welcome to a Frameless Experience</h1>
+    <p>The standard browser search bar, bookmarks, and tabs are completely gone.</p>
+    <br>
+    <button onclick="openPopup()">Open Trusted Sub-Window</button>
+  </div>
+
+  <script>
+    // Register the service worker so Chrome recognizes this as an installable app
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Service Worker Registered"))
+        .catch(err => console.error("Service Worker Failed", err));
+    }
+
+    // Opens a borderless child window from within the app context
+    function openPopup() {
+      window.open(
+        window.location.href, 
+        'subWindow', 
+        'width=500,height=500,popup=yes'
+      );
+    }
+  </script>
+</body>
+</html>

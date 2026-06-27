@@ -1,0 +1,19 @@
+{
+  "name": "Borderless App Demo",
+  "short_name": "Borderless",
+  "start_url": "index.html",
+  "display": "standalone",
+  "display_override": [
+    "borderless",
+    "window-controls-overlay"
+  ],
+  "theme_color": "#2a2a35",
+  "background_color": "#1e1e24",
+  "icons": [
+    {
+      "src": "https://flaticon.com",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
