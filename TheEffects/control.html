@@ -7,515 +7,279 @@
 
 <style>
 :root{
-    --bg:#080b12;
-    --panel:#101826;
-    --panel2:#162133;
-    --border:#2a3954;
-    --text:#e8f1ff;
-    --accent:#6da8ff;
-    --accent2:#7bffcf;
+    --bg:#111;
+    --panel:#1b1b1b;
+    --border:#333;
+    --text:#fff;
+    --accent:#00ff88;
 }
+
+*{box-sizing:border-box;}
 
 body{
     margin:0;
-    padding:24px;
-    background:
-        radial-gradient(circle at top,
-        #182642 0%,
-        #0d1320 40%,
-        #05070d 100%);
+    padding:20px;
+    background:var(--bg);
     color:var(--text);
-    font-family:Inter,Segoe UI,sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 .panel{
-    background:rgba(16,24,38,.85);
-    backdrop-filter:blur(12px);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:18px;
-    margin-bottom:18px;
-
-    box-shadow:
-        0 0 40px rgba(0,0,0,.35),
-        inset 0 0 20px rgba(255,255,255,.02);
-}
-
-h1{
-    margin-top:0;
-    font-size:2rem;
-    letter-spacing:.05em;
-}
-
-button,
-select{
-    width:100%;
-    padding:12px;
-    margin-top:8px;
-
-    background:linear-gradient(
-        180deg,
-        var(--panel2),
-        var(--panel)
-    );
-
+    background:var(--panel);
     border:1px solid var(--border);
     border-radius:12px;
+    padding:16px;
+    margin-bottom:16px;
+}
 
+h1{margin-top:0;}
+
+button,select{
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#222;
     color:white;
-    font-size:.95rem;
-
-    transition:.2s;
 }
 
-button:hover,
-select:hover{
-    transform:translateY(-2px);
+button:hover{cursor:pointer;background:#2b2b2b;}
 
-    border-color:var(--accent);
-
-    box-shadow:
-        0 0 15px rgba(109,168,255,.25);
+.row{
+    display:flex;
+    gap:10px;
 }
 
-button:active{
-    transform:translateY(1px);
-}
+.row button{flex:1;}
 
 #currentMode{
-    color:var(--accent2);
     font-weight:bold;
-}
-.statusline{
-    margin-top:12px;
-    color:#7bffcf;
-    font-size:.85rem;
+    color:var(--accent);
 }
 
-.dot{
-    display:inline-block;
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#7bffcf;
-    margin-right:8px;
-
-    animation:pulse 2s infinite;
+/* PAD GRID */
+.pad-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+    gap:10px;
+    margin-top:10px;
 }
 
-@keyframes pulse{
-    0%,100%{
-        opacity:.3;
-    }
-    50%{
-        opacity:1;
-        box-shadow:0 0 10px #7bffcf;
-    }
+.pad{
+    position:relative;
+    padding:12px 10px;
+    border-radius:10px;
+    background:#222;
+    border:1px solid #333;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    transition:.15s;
+    font-size:13px;
+}
+
+.pad:hover{
+    transform:scale(1.05);
+    border-color:var(--accent);
+}
+
+.pad.active{
+    border-color:var(--accent);
+    box-shadow:0 0 10px rgba(0,255,136,0.2);
+}
+
+.star{
+    position:absolute;
+    top:6px;
+    right:8px;
+    font-size:12px;
+    opacity:0.3;
+    cursor:pointer;
+}
+
+.pad.fav .star{
+    opacity:1;
 }
 </style>
 </head>
+
 <body>
 
 <div class="panel">
     <h1>Chaos Control</h1>
-    <div class="statusline">
-    <span class="dot"></span>
-    CHAOS LINK ACTIVE
-</div>
-    Current Mode:
-    <span id="currentMode">None</span>
+    Current Mode: <span id="currentMode">None</span>
 </div>
 
 <div class="panel">
     <h3>Favorites</h3>
+    <div id="favRow" class="row"></div>
+</div>
 
-    <button onclick="setMode('organism')">
-        Organism
-    </button>
-
-    <button onclick="setMode('swarm')">
-        Swarm
-    </button>
-
-    <button onclick="setMode('bionet')">
-        Bio Net
-    </button>
-
-    <button onclick="setMode('cells')">
-        Void Cells
-    </button>
+<div class="panel">
+    <h3>Effect Pads</h3>
+    <div id="padGrid" class="pad-grid"></div>
 </div>
 
 <div class="panel">
 
-    <h3>All Modes</h3>
+    <h3>Manual Select</h3>
 
-    <select id="modeSelect">
+    <select id="modeSelect"></select>
 
-        <option value="organism">
-            Organism
-        </option>
+    <button onclick="applySelected()">Apply</button>
 
-        <option value="swarm">
-            Swarm
-        </option>
-
-        <option value="bionet">
-            Bio Net
-        </option>
-
-        <option value="cells">
-            Void Cells
-        </option>
-
-        <option value="recursive">
-            Recursive
-        </option>
-
-        <option value="fracture">
-            Fracture
-        </option>
-
-        <option value="vhs">
-            VHS
-        </option>
-
-        <option value="vhs1">
-            VHS 1
-        </option>
-
-        <option value="ascii">
-            ASCII
-        </option>
-
-        <option value="storm">
-            Storm
-        </option>
-
-        <option value="glitch">
-            Glitch
-        </option>
-        <option value="matrix">
-            Matrix
-        </option>
-        <option value="maze">
-            Maze
-        </option>
-        <option value="terminal">
-            Terminal
-        </option>
-        <option value="xp">
-            XP
-        </option>
-        <option value="grid">
-            Grid
-        </option>
-        <option value="stars">
-            Stars
-        </option>
-        <option value="crystal">
-            Crystal
-        </option>
-        <option value="webmind">
-            Web Mind
-        </option>
-        <option value="tendrils">
-            Tendrils
-        </option>
-        <option value="dreamai">
-            Dream AI
-        </option>
-        <option value="ants">
-            Ants
-        </option>
-        <option value="warp">
-            Warp
-        </option>
-        <option value="watchers">
-            Watchers
-        </option>
-        <option value="forest">
-            Forest
-        </option>
-        <option value="dna">
-            DNA
-        </option>
-        <option value="aquarium">
-            Aquarium
-        </option>
-        <option value="echoes">
-            Echoes
-        </option>
-        <option value="Fireflies">
-            Fireflies
-        </option>
-        <option value="Orbital Bloom">
-            Orbital Bloom
-        </option>
-        <option value="Resonance">
-            Resonance
-        </option>
-        <option value="Wanderers">
-            Wanderers
-        </option>
-        <option value="Flux Field">
-            Flux Field
-        </option>
-        <option value="Halo System">
-            Halo System
-        </option>
-        <option value="loading">
-            Loading
-        </option>
-        <option value="collapse">
-            Collapse
-        </option>
-        <option value="bloom">
-            Bloom
-        </option>
-        <option value="lightning">
-            Lightning
-        </option>
-        <option value="runes">
-            Runes
-        </option>
-        <option value="mirror">
-            Mirror
-        </option>
-        <option value="bios">
-            BIOS
-        </option>
-        <option value="nebula">
-            Nebula
-        </option>
-        <option value="lost">
-            Lost
-        </option>
-        <option value="crt">
-            CRT
-        </option>
-        <option value="dvd">
-            DVD
-        </option>
-        <option value="wallpaper">
-            Wallpaper
-        </option>
-        <option value="rainforest">
-            Rainforest
-        </option>
-        <option value="blacksun">
-            Black Sun
-        </option>
-        <option value="scanner">
-            Scanner
-        </option>
-        <option value="garden">
-            Garden
-        </option>
-        <option value="fossils">
-            Fossils
-        </option>
-        <option value="leak">
-            Leak
-        </option>
-        <option value="archive">
-            Archive
-        </option>
-        <option value="ghosts">
-            Ghosts
-        </option>
-        <option value="internetweather">
-            Internet Weather
-        </option>
-        <option value="artificialweather">
-            Artificial Weather
-        </option>
-        <option value="dream">
-            Dream
-        </option>
-        <option value="matrixrain">Matrix Rain</option>
-        <option value="deepstars">Deep Stars</option>
-<option value="superswarm">Super Swarm</option>
-<option value="crystalgrowth">Crystal Growth</option>
-<option value="glitchterminal">Glitch Terminal</option>
-<option value="warptunnel">Warp Tunnel</option>
-<option value="neurons">Neurons</option>
-<option value="lenia">Lenia</option>
-    </select>
-
-    <button onclick="applySelected()">
-        Apply
-    </button>
-
-</div>
-
-<div class="panel">
-
-    <div class="row">
-
-        <button onclick="randomMode()">
-            Random
-        </button>
-
-        <button onclick="toggleAutoplay()"
-                id="autoBtn">
-            Autoplay OFF
-        </button>
-
+    <div class="row" style="margin-top:10px;">
+        <button onclick="randomMode()">Random</button>
+        <button onclick="toggleAutoplay()" id="autoBtn">Autoplay OFF</button>
     </div>
 
 </div>
+<div class="panel">
+    <h3>Other</h3>
+    <button onclick="window.location.href='oldcontrol.html';">Go to Old Control Panel</button>
+    <p>Use this control panel if the new one doesn't work.</p>
+
 <script>
 
-const channel =
-    new BroadcastChannel("chaos");
+const channel = new BroadcastChannel("chaos");
 
 let currentMode = null;
 
+/* ---------------- MODES ---------------- */
+
+const modes = [
+"organism","swarm","bionet","cells","recursive","fracture","vhs","vhs1",
+"ascii","storm","glitch","matrix","maze","terminal","xp","grid","stars",
+"crystal","webmind","tendrils","dreamai","ants","warp","watchers","forest",
+"dna","aquarium","echoes","fireflies","orbital bloom","resonance",
+"wanderers","flux field","halo system","loading","collapse","bloom",
+"lightning","runes","mirror","bios","nebula","lost","crt","dvd",
+"wallpaper","rainforest","blacksun","scanner","garden","fossils","leak",
+"archive","ghosts","internetweather","artificialweather","dream",
+"matrixrain","deepstars","superswarm","crystalgrowth","glitchterminal",
+"warptunnel","neurons","lenia"
+];
+
+/* ---------------- STATE ---------------- */
+
+let favorites = JSON.parse(localStorage.getItem("favModes") || "[]");
+
+/* ---------------- CORE ---------------- */
+
 function setMode(mode){
-
     currentMode = mode;
+    document.getElementById("currentMode").textContent = mode;
+    channel.postMessage({ mode });
+}
 
-    document.getElementById(
-        "currentMode"
-    ).textContent = mode;
+function applySelected(){
+    setMode(document.getElementById("modeSelect").value);
+}
 
-    channel.postMessage({
-        mode
+/* ---------------- PAD SYSTEM ---------------- */
+
+function renderPads(){
+
+    const grid = document.getElementById("padGrid");
+    grid.innerHTML = "";
+
+    modes.forEach(m => {
+
+        const pad = document.createElement("div");
+        pad.className = "pad" + (favorites.includes(m) ? " fav" : "");
+
+        pad.innerHTML = `
+            ${m}
+            <div class="star">★</div>
+        `;
+
+        pad.onclick = () => setMode(m);
+
+        pad.querySelector(".star").onclick = (e) => {
+            e.stopPropagation();
+            toggleFav(m);
+        };
+
+        grid.appendChild(pad);
+    });
+
+    renderFavRow();
+}
+
+function toggleFav(mode){
+
+    if(favorites.includes(mode)){
+        favorites = favorites.filter(f => f !== mode);
+    } else {
+        favorites.push(mode);
+    }
+
+    localStorage.setItem("favModes", JSON.stringify(favorites));
+    renderPads();
+}
+
+function renderFavRow(){
+
+    const row = document.getElementById("favRow");
+    row.innerHTML = "";
+
+    favorites.forEach(m => {
+
+        const b = document.createElement("button");
+        b.textContent = m;
+        b.onclick = () => setMode(m);
+        row.appendChild(b);
+
     });
 
 }
 
-function applySelected(){
+/* ---------------- SELECT ---------------- */
 
-    const mode =
-    document.getElementById(
-        "modeSelect"
-    ).value;
+function buildSelect(){
 
-    setMode(mode);
+    const sel = document.getElementById("modeSelect");
+
+    modes.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        sel.appendChild(opt);
+    });
 
 }
 
-const modes = [
-
-    "organism",
-    "swarm",
-    "bionet",
-    "cells",
-    "recursive",
-    "fracture",
-    "vhs",
-    "ascii",
-    "storm",
-    "glitch",
-    "matrix",
-    "maze",
-    "terminal",
-    "xp",
-    "grid",
-    "stars",
-    "crystal",
-    "webmind",
-    "tendrils",
-    "dreamai",
-    "ants",
-    "warp",
-    "watchers",
-    "forest",
-    "dna",
-    "aquarium",
-    "echoes",
-    "fireflies",
-    "orbital bloom",
-    "resonance",
-    "wanderers",
-    "flux field",
-    "halo system",
-    "loading",
-    "collapse",
-    "bloom",
-    "lightning",
-    "runes",
-    "mirror",
-    "bios",
-    "nebula",
-    "lost",
-    "crt",
-    "dvd",
-    "wallpaper",
-    "rainforest",
-    "blacksun",
-    "scanner",
-    "garden",
-    "fossils",
-    "leak",
-    "archive",
-    "ghosts",
-    "internetweather",
-    "artificialweather",
-    "dream",
-    "matrixrain",
-    "deepstars",
-    "superswarm",
-    "crystalgrowth",
-    "glitchterminal",
-    "warptunnel",
-    "neurons",
-    "lenia",
-
-];
+/* ---------------- RANDOM ---------------- */
 
 function randomMode(){
-
-    const mode =
-    modes[
-        Math.floor(
-            Math.random() *
-            modes.length
-        )
-    ];
-
-    setMode(mode);
-
+    setMode(modes[Math.floor(Math.random()*modes.length)]);
 }
 
+/* ---------------- AUTOPLAY ---------------- */
+
 let autoplay = false;
-let autoplayTimer = null;
+let timer = null;
 
 function toggleAutoplay(){
 
     autoplay = !autoplay;
 
-    const btn =
-    document.getElementById(
-        "autoBtn"
-    );
+    const btn = document.getElementById("autoBtn");
 
     if(autoplay){
-
-        btn.textContent =
-            "Autoplay ON";
-
-        autoplayTimer =
-        setInterval(
-            randomMode,
-            30000
-        );
-
-    }else{
-
-        btn.textContent =
-            "Autoplay OFF";
-
-        clearInterval(
-            autoplayTimer
-        );
-
+        btn.textContent = "Autoplay ON";
+        timer = setInterval(randomMode, 30000);
+    } else {
+        btn.textContent = "Autoplay OFF";
+        clearInterval(timer);
     }
-
 }
 
+/* ---------------- INIT ---------------- */
+
+buildSelect();
+renderPads();
 randomMode();
 
 </script>
