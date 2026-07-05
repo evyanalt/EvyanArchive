@@ -272,7 +272,7 @@ footer {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("resources/banner.jpg");
+  background-image: url("/OffBeat/Resources/banner.jpg");
   background-size: cover;
   background-position: center;
   z-index: 0;
