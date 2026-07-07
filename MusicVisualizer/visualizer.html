@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Local Audio Visualizer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#05060a;
+    --panel:#0b0d13;
+    --panel-2:#12141d;
+    --line:#1d2029;
+    --a:#47e6d5;
+    --b:#ff3e9a;
+    --c:#ffc85e;
+    --text:#eef0f4;
+    --muted:#767c8e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:var(--bg); color:var(--text); font-family:'IBM Plex Mono',monospace; overflow:hidden; }
+  body{
+    display:flex; flex-direction:column;
+    background-image:
+      radial-gradient(ellipse at top, rgba(71,230,213,0.05), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+
+  /* header */
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; border-bottom:1px solid var(--line); flex-shrink:0; z-index:5;
+  }
+  .mark{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:19px; letter-spacing:0.04em;
+    background:linear-gradient(90deg, var(--a), var(--b));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .track-info{ display:flex; align-items:center; gap:7px; font-size:11px; color:var(--muted); max-width:50%; }
+  .track-info svg{ width:13px; height:13px; flex-shrink:0; color:var(--a); }
+  .track-info span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* stage */
+  .stage{ position:relative; flex:1; min-height:0; }
+  canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+  .dropzone{
+    position:absolute; inset:16px; z-index:4;
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px dashed var(--line); border-radius:14px;
+    background:rgba(10,11,16,0.55); backdrop-filter:blur(6px);
+    transition:border-color .2s ease, background .2s ease; cursor:pointer;
+  }
+  .dropzone.drag{ border-color:var(--a); background:rgba(71,230,213,0.06); }
+  .dropzone.hidden{ display:none; }
+  .dropzone .inner{ text-align:center; }
+  .dropzone .glyph{ width:44px; height:44px; margin:0 auto 12px; }
+  .dropzone .glyph svg{ width:100%; height:100%; }
+  .dropzone p{ font-size:12px; color:var(--muted); margin:0; letter-spacing:0.02em; }
+
+  .fs-btn{
+    position:absolute; top:16px; right:16px; z-index:6;
+    width:32px; height:32px; border-radius:8px;
+    border:1px solid var(--line); background:rgba(11,13,19,0.7);
+    color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+  }
+  .fs-btn:hover{ color:var(--text); border-color:var(--a); }
+  .fs-btn svg{ width:15px; height:15px; }
+
+  /* deck */
+  .deck{ flex-shrink:0; border-top:1px solid var(--line); background:var(--panel); padding:12px 18px 14px; display:flex; flex-direction:column; gap:12px; z-index:5; }
+
+  .transport{ display:flex; align-items:center; gap:12px; }
+  .play-btn{
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    border:1px solid var(--a); background:rgba(71,230,213,0.08); color:var(--a);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .play-btn:hover{ background:rgba(71,230,213,0.18); }
+  .play-btn:active{ transform:scale(0.94); }
+  .play-btn svg{ width:15px; height:15px; }
+  .play-btn:disabled{ opacity:0.35; cursor:default; }
+
+  .seek-wrap{ flex:1; display:flex; align-items:center; gap:8px; }
+  .time{ font-size:10px; color:var(--muted); min-width:32px; text-align:center; }
+
+  input[type="range"]{ -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:2px; background:var(--line); outline:none; cursor:pointer; }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:11px; height:11px; border-radius:50%;
+    background:var(--a); border:2px solid #05060a; box-shadow:0 0 6px rgba(71,230,213,0.7);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:11px; height:11px; border-radius:50%; background:var(--a); border:2px solid #05060a; box-shadow:0 0 6px rgba(71,230,213,0.7);
+  }
+  #seek{ background:linear-gradient(90deg, var(--a) 0%, var(--line) 0%); }
+
+  .vol{ display:flex; align-items:center; gap:7px; width:88px; flex-shrink:0; }
+  .vol svg{ width:14px; height:14px; color:var(--muted); flex-shrink:0; }
+
+  .controls{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .divider{ width:1px; align-self:stretch; background:var(--line); margin:2px 2px; flex-shrink:0; }
+
+  .icon-row{ display:flex; gap:5px; flex-wrap:wrap; }
+  .icon-btn{
+    width:32px; height:32px; border-radius:8px; border:1px solid var(--line);
+    background:var(--panel-2); color:var(--muted); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .15s ease; flex-shrink:0; position:relative;
+  }
+  .icon-btn svg{ width:16px; height:16px; }
+  .icon-btn:hover{ color:var(--text); border-color:#2a2e3a; }
+  .icon-btn.active{ color:var(--a); border-color:var(--a); box-shadow:0 0 10px rgba(71,230,213,0.3) inset; }
+
+  .theme-btn{ width:20px; height:20px; border-radius:50%; cursor:pointer; border:2px solid var(--line); padding:0; flex-shrink:0; }
+  .theme-btn.active{ border-color:var(--text); }
+
+  .slider-mini{ display:flex; align-items:center; gap:6px; width:104px; flex-shrink:0; }
+  .slider-mini .icon{ width:14px; height:14px; color:var(--muted); flex-shrink:0; }
+  .slider-mini .val{ font-size:9px; color:var(--a); width:22px; text-align:right; flex-shrink:0; }
+
+  input[type="file"]{ display:none; }
+
+  @media (max-width: 640px){
+    .track-info{ display:none; }
+    .slider-mini{ width:86px; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <span class="mark">SIGNAL</span>
+    <div class="track-info" id="trackInfo"></div>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="canvas"></canvas>
+
+    <button class="fs-btn" id="fsBtn" title="Fullscreen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3H5a2 2 0 0 0-2 2v4M15 3h4a2 2 0 0 1 2 2v4M9 21H5a2 2 0 0 1-2-2v-4M15 21h4a2 2 0 0 0 2-2v-4"/></svg>
+    </button>
+
+    <div class="dropzone" id="dropzone">
+      <div class="inner">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#47e6d5" stroke-width="1.4">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+          </svg>
+        </div>
+        <p>Drop audio, or tap to browse</p>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept="audio/*">
+  </div>
+
+  <div class="deck">
+    <div class="transport">
+      <button class="play-btn" id="playBtn" disabled>
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="seek-wrap">
+        <span class="time" id="curTime">0:00</span>
+        <input type="range" id="seek" min="0" max="100" value="0" step="0.1">
+        <span class="time" id="durTime">0:00</span>
+      </div>
+      <div class="vol">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
+        <input type="range" id="volume" min="0" max="1" value="0.85" step="0.01">
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="icon-row" id="modes">
+        <button class="icon-btn active" data-mode="bars" title="Bars">
+          <svg viewBox="0 0 24 24"><rect x="4" y="10" width="3" height="10" fill="currentColor"/><rect x="10.5" y="4" width="3" height="16" fill="currentColor"/><rect x="17" y="13" width="3" height="7" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" data-mode="radial" title="Radial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/>
+            <path d="M12 7v-5M12 17v5M17 12h5M7 12h-5M15.5 8.5l3.5-3.5M8.5 8.5L5 5M15.5 15.5l3.5 3.5M8.5 15.5L5 19"/>
+          </svg>
+        </button>
+        <button class="icon-btn" data-mode="wave" title="Wave">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12Q4 5 7 12T13 12T19 12T23 12"/></svg>
+        </button>
+        <button class="icon-btn" data-mode="nebula" title="Nebula">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.3" fill="currentColor"/><circle cx="17" cy="6" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="19" cy="16" r="1" fill="currentColor"/><circle cx="6" cy="17" r="1.2" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" data-mode="tunnel" title="Tunnel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="12,3 19.79,7.5 19.79,16.5 12,21 4.21,16.5 4.21,7.5"/>
+            <polygon points="12,7.5 15.9,9.75 15.9,14.25 12,16.5 8.1,14.25 8.1,9.75"/>
+          </svg>
+        </button>
+        <button class="icon-btn" data-mode="kaleido" title="Kaleidoscope">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="12,3 20,18 4,18"/><polygon points="12,21 4,6 20,6"/>
+          </svg>
+        </button>
+        <button class="icon-btn" data-mode="rings" title="Rings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg>
+        </button>
+        <button class="icon-btn" data-mode="starfield" title="Starfield">
+          <svg viewBox="0 0 24 24"><path d="M12 2L14 9L21 11L14 13L12 20L10 13L3 11L10 9Z" fill="currentColor"/></svg>
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="icon-row" id="themes"></div>
+
+      <div class="divider"></div>
+
+      <div class="slider-mini">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" title="Reactivity"><path d="M2 12h4l2-7 3 14 3-10 2 3h6"/></svg>
+        <input type="range" id="sensitivity" min="0.5" max="3" value="1.4" step="0.1">
+        <span class="val" id="sensVal">1.4</span>
+      </div>
+
+      <div class="slider-mini">
+        <svg class="icon" viewBox="0 0 24 24" title="Afterglow"><circle cx="5" cy="12" r="2.2" fill="currentColor"/><circle cx="11" cy="12" r="1.5" fill="currentColor" opacity="0.55"/><circle cx="16" cy="12" r="1" fill="currentColor" opacity="0.3"/><circle cx="20" cy="12" r="0.6" fill="currentColor" opacity="0.15"/></svg>
+        <input type="range" id="trail" min="0" max="0.95" value="0.75" step="0.01">
+        <span class="val" id="trailVal">0.75</span>
+      </div>
+
+      <button class="icon-btn" id="mirrorBtn" title="Mirror">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M6 8l-3 4 3 4M18 8l3 4-3 4"/></svg>
+      </button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------------- theme definitions ----------------
+  const THEMES = {
+    aurora: { colors:['#47e6d5','#ff3e9a','#ffc85e'] },
+    ember:  { colors:['#ff6b35','#ffd23f','#ff3e6c'] },
+    violet: { colors:['#9d7bff','#40c9ff','#ff6bcb'] },
+    mono:   { colors:['#e8e8e8','#9a9a9a','#47e6d5'] }
+  };
+  let currentThemeKey = 'aurora';
+
+  const themesEl = document.getElementById('themes');
+  Object.keys(THEMES).forEach(function(key){
+    const b = document.createElement('button');
+    b.className = 'theme-btn' + (key === currentThemeKey ? ' active' : '');
+    b.style.background = 'linear-gradient(135deg,' + THEMES[key].colors[0] + ',' + THEMES[key].colors[1] + ')';
+    b.dataset.theme = key;
+    b.title = key;
+    themesEl.appendChild(b);
+  });
+  themesEl.addEventListener('click', function(e){
+    const btn = e.target.closest('.theme-btn');
+    if(!btn) return;
+    currentThemeKey = btn.dataset.theme;
+    [...themesEl.children].forEach(c => c.classList.toggle('active', c === btn));
+  });
+
+  function hexToRgb(hex){ const n = parseInt(hex.slice(1),16); return [(n>>16)&255,(n>>8)&255,n&255]; }
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function lerpTheme(t){
+    t = ((t % 1) + 1) % 1;
+    const cols = THEMES[currentThemeKey].colors.map(hexToRgb);
+    const seg = t <= 0.5 ? [cols[0], cols[1], t/0.5] : [cols[1], cols[2], (t-0.5)/0.5];
+    const r = Math.round(lerp(seg[0][0], seg[1][0], seg[2]));
+    const g = Math.round(lerp(seg[0][1], seg[1][1], seg[2]));
+    const b = Math.round(lerp(seg[0][2], seg[1][2], seg[2]));
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+  function colorAt(i){ const cols = THEMES[currentThemeKey].colors; return cols[i % cols.length]; }
+
+  // ---------------- state ----------------
+  const MODE_ORDER = ['bars','radial','wave','nebula','tunnel','kaleido','rings','starfield'];
+  const state = {
+    mode: 'bars', sensitivity: 1.4, trail: 0.75, mirror: false,
+    rotation: 0, tunnelPhase: 0,
+    particles: [], rings: [], bassHistory: [], lastBeat: 0, stars: [],
+    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  };
+
+  function newStar(){ return { x:(Math.random()*2-1)*1000, y:(Math.random()*2-1)*1000, z:Math.random()*1000+1 }; }
+  for(let i=0;i<420;i++) state.stars.push(newStar());
+
+  // ---------------- DOM refs ----------------
+  const stage = document.getElementById('stage');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const seek = document.getElementById('seek');
+  const curTimeEl = document.getElementById('curTime');
+  const durTimeEl = document.getElementById('durTime');
+  const volumeEl = document.getElementById('volume');
+  const trackInfo = document.getElementById('trackInfo');
+  const fsBtn = document.getElementById('fsBtn');
+  const mirrorBtn = document.getElementById('mirrorBtn');
+  const sensSlider = document.getElementById('sensitivity');
+  const sensVal = document.getElementById('sensVal');
+  const trailSlider = document.getElementById('trail');
+  const trailVal = document.getElementById('trailVal');
+
+  // ---------------- audio setup ----------------
+  const audio = new Audio();
+  audio.crossOrigin = 'anonymous';
+  let audioCtx = null, analyser = null, sourceNode = null;
+  let freqData = null, timeData = null;
+  let hasFile = false;
+
+  function ensureAudioGraph(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.8;
+    sourceNode = audioCtx.createMediaElementSource(audio);
+    sourceNode.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+    timeData = new Uint8Array(analyser.fftSize);
+  }
+
+  function loadFile(file){
+    if(!file || !file.type.startsWith('audio')) return;
+    ensureAudioGraph();
+    audio.src = URL.createObjectURL(file);
+    hasFile = true;
+    dropzone.classList.add('hidden');
+    playBtn.disabled = false;
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    trackInfo.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>' + name + '</span>';
+    audioCtx.resume().then(() => audio.play());
+  }
+
+  fileInput.addEventListener('change', e => loadFile(e.target.files[0]));
+  dropzone.addEventListener('click', () => fileInput.click());
+  ['dragover','dragenter'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); }));
+  dropzone.addEventListener('drop', e => { if(e.dataTransfer.files.length) loadFile(e.dataTransfer.files[0]); });
+
+  // ---------------- transport ----------------
+  function setPlayIcon(playing){
+    playIcon.innerHTML = playing
+      ? '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+  }
+  playBtn.addEventListener('click', () => {
+    if(!hasFile) return;
+    if(audio.paused){ audioCtx.resume(); audio.play(); } else { audio.pause(); }
+  });
+  audio.addEventListener('play', () => setPlayIcon(true));
+  audio.addEventListener('pause', () => setPlayIcon(false));
+
+  function fmtTime(s){ if(!isFinite(s)) return '0:00'; const m=Math.floor(s/60), sec=Math.floor(s%60); return m+':'+String(sec).padStart(2,'0'); }
+  audio.addEventListener('loadedmetadata', () => { durTimeEl.textContent = fmtTime(audio.duration); seek.max = audio.duration || 100; });
+  audio.addEventListener('timeupdate', () => {
+    if(!seek.dragging){
+      seek.value = audio.currentTime;
+      const pct = (audio.currentTime / (audio.duration||1)) * 100;
+      seek.style.background = 'linear-gradient(90deg, var(--a) ' + pct + '%, var(--line) ' + pct + '%)';
+    }
+    curTimeEl.textContent = fmtTime(audio.currentTime);
+  });
+  seek.addEventListener('mousedown', () => seek.dragging = true);
+  seek.addEventListener('touchstart', () => seek.dragging = true);
+  seek.addEventListener('change', () => { audio.currentTime = parseFloat(seek.value); seek.dragging = false; });
+  volumeEl.addEventListener('input', () => audio.volume = parseFloat(volumeEl.value));
+  audio.volume = 0.85;
+
+  window.addEventListener('keydown', e => {
+    if(document.activeElement.tagName === 'INPUT') return;
+    if(e.code === 'Space'){ e.preventDefault(); playBtn.click(); return; }
+    const n = parseInt(e.key, 10);
+    if(n >= 1 && n <= MODE_ORDER.length) selectMode(MODE_ORDER[n-1]);
+  });
+
+  // ---------------- control wiring ----------------
+  function selectMode(mode){
+    state.mode = mode;
+    [...document.querySelectorAll('#modes .icon-btn')].forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  }
+  document.getElementById('modes').addEventListener('click', e => {
+    const btn = e.target.closest('.icon-btn');
+    if(btn) selectMode(btn.dataset.mode);
+  });
+
+  sensSlider.addEventListener('input', () => { state.sensitivity = parseFloat(sensSlider.value); sensVal.textContent = state.sensitivity.toFixed(1); });
+  trailSlider.addEventListener('input', () => { state.trail = parseFloat(trailSlider.value); trailVal.textContent = state.trail.toFixed(2); });
+  mirrorBtn.addEventListener('click', () => { state.mirror = !state.mirror; mirrorBtn.classList.toggle('active', state.mirror); });
+
+  fsBtn.addEventListener('click', () => {
+    if(!document.fullscreenElement){ stage.requestFullscreen().catch(()=>{}); }
+    else { document.exitFullscreen(); }
+  });
+
+  // ---------------- canvas sizing ----------------
+  let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize(){
+    const rect = stage.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---------------- draw helpers ----------------
+  function bandAvg(data, i, count){
+    const t0 = i/count, t1 = (i+1)/count;
+    const len = data.length;
+    const start = Math.floor(Math.pow(t0,2)*len);
+    const end = Math.max(start+1, Math.floor(Math.pow(t1,2)*len));
+    let sum = 0;
+    for(let j=start;j<end;j++) sum += data[j];
+    return (sum/(end-start))/255;
+  }
+  function overallEnergy(data){ let sum=0; for(let i=0;i<data.length;i++) sum+=data[i]; return (sum/data.length)/255; }
+  function paintBackdrop(){ const alpha = 1 - state.trail; ctx.fillStyle = 'rgba(5,6,10,' + Math.max(alpha,0.04) + ')'; ctx.fillRect(0,0,W,H); }
+
+  function drawBars(){
+    const barCount = 84, gap = 3;
+    const barWidth = Math.max(1, (W/barCount) - gap);
+    for(let i=0;i<barCount;i++){
+      const avg = bandAvg(freqData, i, barCount);
+      const val = Math.min(1, avg * state.sensitivity);
+      const barH = val * H * 0.85;
+      const x = i * (barWidth + gap);
+      const color = lerpTheme(i/barCount);
+      ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 10 * val;
+      if(state.mirror){ ctx.fillRect(x, H/2 - barH/2, barWidth, barH); }
+      else { ctx.fillRect(x, H - barH, barWidth, barH); }
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  function drawRadial(){
+    const cx = W/2, cy = H/2;
+    const barCount = 130;
+    const baseR = Math.min(W,H) * 0.14;
+    const maxLen = Math.min(W,H) * 0.32;
+    const energy = overallEnergy(freqData);
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(state.rotation);
+    for(let i=0;i<barCount;i++){
+      const avg = bandAvg(freqData, i, barCount);
+      const val = Math.min(1, avg * state.sensitivity);
+      const len = baseR + val * maxLen;
+      const angle = (i/barCount) * Math.PI * 2;
+      const x1 = Math.cos(angle)*baseR, y1 = Math.sin(angle)*baseR;
+      const x2 = Math.cos(angle)*len, y2 = Math.sin(angle)*len;
+      const color = lerpTheme(i/barCount);
+      ctx.strokeStyle = color; ctx.lineWidth = 2.6; ctx.shadowColor = color; ctx.shadowBlur = 9 * val;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    }
+    ctx.restore(); ctx.shadowBlur = 0;
+    if(!state.reducedMotion) state.rotation += 0.0016 + energy*0.012;
+    const r = baseR*0.55 + energy*40;
+    const grad = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(r,1));
+    grad.addColorStop(0, lerpTheme(0.5)); grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2); ctx.fill();
+  }
+
+  function drawWave(){
+    const len = timeData.length, slice = W/len;
+    ctx.beginPath();
+    for(let i=0;i<len;i++){
+      const v = (timeData[i]-128)/128;
+      const y = H/2 + v * H * 0.38 * state.sensitivity;
+      const x = i*slice;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    const color = lerpTheme(0.5);
+    ctx.strokeStyle = color; ctx.lineWidth = 2.4; ctx.shadowColor = color; ctx.shadowBlur = 16;
+    ctx.stroke(); ctx.shadowBlur = 0;
+    ctx.save(); ctx.globalAlpha = 0.25; ctx.scale(1,-1); ctx.translate(0,-H); ctx.stroke(); ctx.restore();
+  }
+
+  function spawnParticle(cx, cy, energy){
+    const angle = Math.random()*Math.PI*2;
+    const speed = 1.2 + energy*5*Math.random();
+    state.particles.push({
+      x: cx, y: cy, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+      life: 1, decay: 0.006 + Math.random()*0.012,
+      size: 2 + Math.random()*3 + energy*4, color: colorAt(Math.floor(Math.random()*3))
+    });
+  }
+
+  function drawNebula(){
+    const cx = W/2, cy = H/2;
+    const bass = bandAvg(freqData, 0, 12) * state.sensitivity;
+    const energy = overallEnergy(freqData);
+    const barCount = 96, baseR = Math.min(W,H) * 0.1;
+    ctx.save(); ctx.translate(cx,cy); ctx.globalAlpha = 0.55;
+    for(let i=0;i<barCount;i++){
+      const val = Math.min(1, bandAvg(freqData,i,barCount) * state.sensitivity);
+      const angle = (i/barCount)*Math.PI*2;
+      const len = baseR + val*Math.min(W,H)*0.18;
+      const x2 = Math.cos(angle)*len, y2 = Math.sin(angle)*len;
+      ctx.strokeStyle = lerpTheme(i/barCount); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(Math.cos(angle)*baseR, Math.sin(angle)*baseR); ctx.lineTo(x2,y2); ctx.stroke();
+    }
+    ctx.restore();
+    if(bass > 0.45 && state.particles.length < 400){
+      const count = Math.floor(bass*4);
+      for(let i=0;i<count;i++) spawnParticle(cx,cy,bass);
+    }
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for(let i=state.particles.length-1;i>=0;i--){
+      const p = state.particles[i];
+      p.x += p.vx; p.y += p.vy; p.vx *= 0.985; p.vy *= 0.985; p.life -= p.decay;
+      if(p.life <= 0){ state.particles.splice(i,1); continue; }
+      const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3);
+      grad.addColorStop(0, p.color); grad.addColorStop(1, 'transparent');
+      ctx.globalAlpha = p.life; ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+    const r = baseR*0.5 + energy*30;
+    const grad2 = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(r,1));
+    grad2.addColorStop(0, lerpTheme(0.2)); grad2.addColorStop(1, 'transparent');
+    ctx.globalAlpha = 1; ctx.fillStyle = grad2;
+    ctx.beginPath(); ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2); ctx.fill();
+  }
+
+  function drawTunnel(){
+    const cx = W/2, cy = H/2;
+    const bass = bandAvg(freqData,0,16) * state.sensitivity;
+    if(!state.reducedMotion) state.tunnelPhase += 0.0035 + bass*0.02;
+    const rings = 14, maxR = Math.hypot(W,H)*0.6, sides = 6;
+    for(let i=rings;i>=0;i--){
+      const t = ((i/rings) + state.tunnelPhase) % 1;
+      const r = t*t*maxR;
+      const rot = state.tunnelPhase*3 + i*0.15;
+      const val = bandAvg(freqData, i, rings);
+      const color = lerpTheme(t);
+      ctx.strokeStyle = color; ctx.lineWidth = 1 + (1-t)*4; ctx.globalAlpha = Math.min(1, (1-t)*1.4);
+      ctx.beginPath();
+      for(let s=0;s<=sides;s++){
+        const a = rot + (s/sides)*Math.PI*2;
+        const rr = r*(1 + val*0.3);
+        const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
+        if(s===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.closePath(); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawKaleido(){
+    const cx = W/2, cy = H/2;
+    const segments = 10, wedgeAngle = Math.PI*2/segments, barsPerWedge = 24;
+    const maxR = Math.min(W,H)*0.48;
+    const energy = overallEnergy(freqData);
+    ctx.save(); ctx.translate(cx,cy);
+    for(let seg=0; seg<segments; seg++){
+      ctx.save();
+      ctx.rotate(seg*wedgeAngle + state.rotation);
+      if(seg % 2 === 1) ctx.scale(1,-1);
+      ctx.beginPath();
+      for(let i=0;i<barsPerWedge;i++){
+        const val = Math.min(1, bandAvg(freqData,i,barsPerWedge) * state.sensitivity);
+        const angle = (i/barsPerWedge)*wedgeAngle;
+        const r = maxR*0.15 + val*maxR*0.85;
+        const x = Math.cos(angle)*r, y = Math.sin(angle)*r;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      const color = lerpTheme(seg/segments);
+      ctx.lineTo(0,0); ctx.closePath();
+      ctx.fillStyle = color; ctx.globalAlpha = 0.16; ctx.fill();
+      ctx.globalAlpha = 0.9; ctx.strokeStyle = color; ctx.lineWidth = 1.6;
+      ctx.shadowColor = color; ctx.shadowBlur = 8; ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    if(!state.reducedMotion) state.rotation += 0.001 + energy*0.01;
+  }
+
+  function drawRings(){
+    const cx = W/2, cy = H/2;
+    const bass = bandAvg(freqData,0,10);
+    state.bassHistory.push(bass);
+    if(state.bassHistory.length > 43) state.bassHistory.shift();
+    const avg = state.bassHistory.reduce((a,b)=>a+b,0) / state.bassHistory.length;
+    const now = performance.now();
+    if(bass > avg*1.25 && bass > 0.35 && now - state.lastBeat > 140){
+      state.lastBeat = now;
+      state.rings.push({ r:10, alpha:1, color: lerpTheme(Math.random()) });
+    }
+    for(let i=state.rings.length-1;i>=0;i--){
+      const ring = state.rings[i];
+      ring.r += 3.5 + bass*state.sensitivity*6;
+      ring.alpha -= 0.012;
+      if(ring.alpha <= 0){ state.rings.splice(i,1); continue; }
+      ctx.strokeStyle = ring.color; ctx.globalAlpha = ring.alpha; ctx.lineWidth = 2.5;
+      ctx.shadowColor = ring.color; ctx.shadowBlur = 12*ring.alpha;
+      ctx.beginPath(); ctx.arc(cx,cy,ring.r,0,Math.PI*2); ctx.stroke();
+    }
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    const energy = overallEnergy(freqData);
+    const r = 8 + energy*30*state.sensitivity;
+    const grad = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(r,1));
+    grad.addColorStop(0, lerpTheme(0.5)); grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2); ctx.fill();
+  }
+
+  function drawStarfield(){
+    const cx = W/2, cy = H/2;
+    const energy = overallEnergy(freqData);
+    const speed = 4 + energy*state.sensitivity*40;
+    for(const s of state.stars){
+      s.z -= speed;
+      if(s.z <= 1) Object.assign(s, newStar(), { z: 1000 });
+      const k = 300/s.z;
+      const sx = cx + s.x*k, sy = cy + s.y*k;
+      if(sx < 0 || sx > W || sy < 0 || sy > H){ Object.assign(s, newStar(), { z: 1000 }); continue; }
+      const size = (1 - s.z/1000)*2.4 + 0.3;
+      const t = (Math.atan2(s.y, s.x)/(Math.PI*2)) + 0.5;
+      const color = lerpTheme(t);
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(sx,sy,size,0,Math.PI*2); ctx.fill();
+      if(speed > 18){
+        const pk = 300/(s.z + speed);
+        const px = cx + s.x*pk, py = cy + s.y*pk;
+        ctx.strokeStyle = color; ctx.globalAlpha = 0.45; ctx.lineWidth = size*0.6;
+        ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke(); ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // ---------------- main loop ----------------
+  function tick(){
+    requestAnimationFrame(tick);
+    paintBackdrop();
+    if(analyser){
+      analyser.getByteFrequencyData(freqData);
+      analyser.getByteTimeDomainData(timeData);
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.02)'; ctx.fillRect(0,0,W,H);
+      return;
+    }
+    switch(state.mode){
+      case 'bars': drawBars(); break;
+      case 'radial': drawRadial(); break;
+      case 'wave': drawWave(); break;
+      case 'nebula': drawNebula(); break;
+      case 'tunnel': drawTunnel(); break;
+      case 'kaleido': drawKaleido(); break;
+      case 'rings': drawRings(); break;
+      case 'starfield': drawStarfield(); break;
+    }
+  }
+  tick();
+})();
+</script>
+</body>
+</html>
