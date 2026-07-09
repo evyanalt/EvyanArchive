@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <defs>
+    <linearGradient id="gdOrig" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6d28d9"/>
+      <stop offset="50%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="72" fill="#050816"/>
+  <rect x="36" y="36" width="568" height="568" rx="52" fill="url(#gdOrig)"/>
+  <circle cx="320" cy="320" r="180" fill="#f8fafc" fill-opacity="0.12"/>
+  <circle cx="320" cy="320" r="122" fill="#f8fafc" fill-opacity="0.18"/>
+  <path d="M240 240h160v160H240z" fill="#f8fafc" fill-opacity="0.16"/>
+  <path d="M256 280c0-34 26-60 60-60h8c35 0 60 26 60 60v80c0 34-25 60-60 60h-8c-34 0-60-26-60-60z" fill="#f8fafc" fill-opacity="0.22"/>
+  <text x="320" y="520" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700" fill="#f8fafc">GD Originals</text>
+</svg>
