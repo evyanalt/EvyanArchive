@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GD Studios // OffBeat Command</title>
+    <link rel="stylesheet" href="style-gd.css">
+</head>
+<body>
+
+  <canvas id="starfield"></canvas>
+
+  <div class="command-center">
+    <div class="profile-header">
+      <h2>GD STUDIOS</h2>
+      <p class="title">Galaxy_Destroyer_ // Lead Vocalist & Lyricist</p>
+    </div>
+
+    <hr class="glow-divider">
+
+    <div class="info-grid">
+      <div class="info-section">
+        <h3>ROLE</h3>
+        <p>The voice and the pen. Responsible for writing the lyrics, executing the lead vocals, and laying down the original tracks before Evyan mutates them in the lab.</p>
+      </div>
+
+      <div class="info-section">
+        <h3>SPECS</h3>
+        <div class="spec-output">
+          <strong>DAW:</strong> BandLab Studio<br>
+          <strong>CPU:</strong> AMD Ryzen 7 5700X @ 3.4GHz (8 Cores / 16 Threads)<br>
+          <strong>RAM:</strong> 32GB DDR4 @ 3200MHz Dual-Channel<br>
+          <strong>GPU:</strong> NVIDIA GeForce RTX 5060 8GB<br>
+          <strong>Storage:</strong> 1TB NVMe M.2 SSD<br>
+          <strong>Audio Gear:</strong> Cheap ass speakers
+        </div>
+      </div>
+    </div>
+
+    <a href="../index.html" class="orbit-btn">Back Home</a>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+
+    // Resize canvas to fill screen
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Create star array
+    const numStars = 150;
+    const stars = [];
+
+    for (let i = 0; i < numStars; i++) {
+        stars.push({
+            x: Math.random() * canvas.width - canvas.width / 2,
+            y: Math.random() * canvas.width - canvas.width / 2, // keep it square for even distribution
+            z: Math.random() * canvas.width,
+            color: `hsl(${Math.random() * 40 + 240}, 100%, 85%)` // Blended cosmic blues and purples
+        });
+    }
+
+    function animate() {
+        // Create subtle fade trails
+        ctx.fillStyle = 'rgba(5, 0, 17, 0.2)'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        for (let i = 0; i < numStars; i++) {
+            let star = stars[i];
+            
+            // Move stars closer (warp speed)
+            star.z -= 2; 
+
+            // If star passes the screen, reset it to the background
+            if (star.z <= 0) {
+                star.x = Math.random() * canvas.width - canvas.width / 2;
+                star.y = Math.random() * canvas.height - canvas.height / 2;
+                star.z = canvas.width;
+            }
+
+            // 3D Projection math to make them fly toward the camera
+            let px = (star.x / star.z) * canvas.width + cx;
+            let py = (star.y / star.z) * canvas.height + cy;
+
+            // Calculate size based on depth
+            let size = (1 - star.z / canvas.width) * 4;
+
+            // Only draw if within bounds
+            if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+                ctx.fillStyle = star.color;
+                ctx.beginPath();
+                ctx.arc(px, py, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>

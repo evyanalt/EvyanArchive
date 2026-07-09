@@ -1,0 +1,50 @@
+body {
+    /* The legendary Windows XP Bliss background */
+    background-image: url("../Resources/bliss.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; /* Maximize the meme vibe */
+}
+
+.meme-container {
+    background-color: rgba(255, 255, 255, 0.85); /* Slightly see-through white box */
+    padding: 30px;
+    border-radius: 10px;
+    border: 3px solid #003399; /* Windows XP blue border */
+    text-align: center;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    color: #003399;
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+}
+
+.subtext {
+    color: #555;
+    font-style: italic;
+    margin-bottom: 25px;
+}
+
+.back-link {
+    display: inline-block;
+    color: white;
+    background-color: #24ae1d; /* Windows XP green Start button color */
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
+}
+
+.back-link:hover {
+    background-color: #1b8a15;
+}

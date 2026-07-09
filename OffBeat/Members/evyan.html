@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evyan // OffBeat Terminal</title>
+    <link rel="stylesheet" href="style-e.css">
+</head>
+<body>
+
+  <div class="terminal-container">
+    <div class="terminal-header">
+      <span class="buttons">● ● ●</span>
+      <span class="window-title">evyan@offbeat_os:~</span>
+    </div>
+
+    <div class="terminal-body">
+      <h1 class="glitch-text">EVYAN // PRODUCER</h1>
+      <p class="subtitle">System status: ONLINE. Being bored.</p>
+      
+      <hr class="terminal-divider">
+
+      <nav class="terminal-nav">
+        <a href="#about" class="nav-btn">[ 1. About_Me ]</a>
+        <a href="#gear" class="nav-btn">[ 2. Studio_Specs ]</a>
+        <a href="../index.html" class="nav-btn">[ 3. Back_To_Main ]</a>
+      </nav>
+
+      <section id="about" class="content-section">
+        <h3>> WHOAMI</h3>
+        <p>I'm Evyan, I make most of the actual beats, covers and handle the Band's accounts and site. If you ever hear a wierd sound effect or bassline in a song, I definently put it there.<br>Most of the time, GD Studios makes a song with a basic beat and piano, Then i come and remix it with better beats and extra effects.</p>
+      </section>
+
+      <section id="gear" class="content-section">
+        <h3>> HARDWARE_SPECS</h3>
+        <ul>
+          <li><strong>DAW:</strong> BandLab's Cakewalk Next / Digital Audio Workstation</li>
+          <li><strong>Focus Level:</strong> 2% Focus / 98% Distracted by the cat</li>
+          <li><strong>Specialty:</strong> Chaos mixing & GD Studios track restructuring</li>
+        </ul>
+
+        <button id="spec-toggle" class="toggle-btn" aria-expanded="false">
+          ▶ Show PC Specs
+        </button>
+        <div id="pc-spec-panel" class="pc-spec-panel collapsed" aria-hidden="true">
+          <label for="pc-spec-select">PC Specs</label>
+          <select id="pc-spec-select" aria-label="PC Specs select">
+            <option value="desktop" selected>Desktop</option>
+            <option value="laptop">Laptop</option>
+          </select>
+          <div id="pc-spec-output" class="spec-output">
+            CPU: Intel Core i5-4670<br>
+            RAM: 12GB DDR3<br>
+            Storage: 250GB SSD + 500GB HDD + 150GB HDD
+            GPU: AMD Radeon HD 7900 Series
+          </div>
+          <p>Yes I'm broke (Jk I work with what I got, I will get something better eventually)</p>
+        </div>
+      </section>
+      <section id="links">
+        <h3>> LINKS</h3>
+        <ul>
+          <li><a href="https://www.youtube.com/@evyantime" target="_blank">YouTube</a></li>
+          <li><a href="https://www.bandlab.com/evyantime" target="_blank">BandLab</a></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  <script>
+    const specs = {
+      desktop: 'CPU: Intel Core i5-4670<br>RAM: 12GB DDR3<br>Storage: 250GB SSD + 500GB HDD + 150GB HDD<br>GPU: AMD Radeon HD 7900 Series',
+      laptop: 'CPU: Intel Core i5-4210U<br>RAM: 4GB DDR3L<br>Storage: 120GB HDD<br>GPU: NVIDIA GeForce 820M',
+    };
+    const select = document.getElementById('pc-spec-select');
+    const output = document.getElementById('pc-spec-output');
+    const toggle = document.getElementById('spec-toggle');
+    const panel = document.getElementById('pc-spec-panel');
+
+    select.addEventListener('change', () => {
+      output.innerHTML = specs[select.value];
+    });
+
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      panel.classList.toggle('collapsed');
+      panel.setAttribute('aria-hidden', String(expanded));
+      toggle.textContent = expanded ? '▶ Show PC Specs' : '▼ Hide PC Specs';
+    });
+  </script>
+</body>
+</html>

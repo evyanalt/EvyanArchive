@@ -1,0 +1,171 @@
+/* Styling the background and terminal box */
+body {
+    background-color: #0d0d0d;
+    color: #33ff33; /* Classic terminal green */
+    font-family: 'Courier New', Courier, monospace; /* Clean monospace style */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.terminal-container {
+    width: 100%;
+    max-width: 700px;
+    background-color: #1a1a1a;
+    border: 2px solid #33ff33;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(51, 255, 51, 0.2);
+}
+
+/* Header window styling */
+.terminal-header {
+    background-color: #262626;
+    padding: 10px;
+    display: flex;
+    border-bottom: 2px solid #33ff33;
+    font-size: 0.9rem;
+}
+
+.buttons {
+    color: #ff5555;
+    margin-right: 15px;
+    letter-spacing: 2px;
+}
+
+.window-title {
+    color: #888;
+}
+
+/* Inner contents and the glow effects */
+.terminal-body {
+    padding: 20px;
+}
+
+h1, h3 {
+    color: #33ff33;
+    /* This text-shadow gives it that awesome retro neon glow */
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.7), 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+.terminal-divider {
+    border: 0;
+    border-top: 1px dashed #33ff33;
+    margin: 20px 0;
+}
+
+/* Making navigation clear and easy to click */
+.terminal-nav {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.nav-btn {
+    color: #33ff33;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+/* Visual feedback when people hover over the menu options */
+.nav-btn:hover {
+    background-color: #33ff33;
+    color: #1a1a1a;
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.8);
+    cursor: pointer;
+}
+
+.content-section {
+    margin-top: 25px;
+}
+
+ul {
+    list-style-type: "- ";
+    padding-left: 20px;
+}
+
+.toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 10px 14px;
+    border: 1px solid #33ff33;
+    border-radius: 4px;
+    background-color: transparent;
+    color: #33ff33;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toggle-btn:hover,
+.toggle-btn:focus {
+    background-color: rgba(51, 255, 51, 0.08);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.15);
+}
+
+.pc-spec-panel {
+    margin-top: 15px;
+    padding: 16px;
+    border: 1px dashed #33ff33;
+    border-radius: 4px;
+    background-color: rgba(51, 255, 51, 0.04);
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    overflow: hidden;
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pc-spec-panel.collapsed {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+}
+
+.pc-spec-panel label {
+    display: block;
+    margin-bottom: 8px;
+    color: #b6ffb6;
+}
+
+.pc-spec-panel select {
+    width: 100%;
+    max-width: 420px;
+    padding: 10px 12px;
+    border: 1px solid #33ff33;
+    border-radius: 4px;
+    background-color: #0d0d0d;
+    color: #33ff33;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.pc-spec-panel select:hover,
+.pc-spec-panel select:focus {
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.25);
+    border-color: #8cff8c;
+}
+
+.spec-output {
+    margin-top: 15px;
+    padding: 12px;
+    border: 1px dashed #33ff33;
+    border-radius: 4px;
+    background-color: rgba(51, 255, 51, 0.04);
+    color: #b6ffb6;
+    line-height: 1.6;
+}
