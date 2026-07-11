@@ -28,7 +28,7 @@
 
       <section id="about" class="content-section">
         <h3>> WHOAMI</h3>
-        <p>I'm Evyan, I make most of the actual beats, covers and handle the Band's accounts and site. If you ever hear a wierd sound effect or bassline in a song, I definently put it there.<br>Most of the time, GD Studios makes a song with a basic beat and piano, Then i come and remix it with better beats and extra effects.</p>
+        <p>I'm Evyan, I make most of the actual beats, covers and handle the Band's accounts and site. If you ever hear a wierd sound effect or bassline in a song, I definently put it there.<br>Most of the time, BD Studios makes a song with a basic beat and piano, Then i come and remix it with better beats and extra effects.</p>
       </section>
 
       <section id="gear" class="content-section">
@@ -36,11 +36,11 @@
         <ul>
           <li><strong>DAW:</strong> BandLab's Cakewalk Next / Digital Audio Workstation</li>
           <li><strong>Focus Level:</strong> 2% Focus / 98% Distracted by the cat</li>
-          <li><strong>Specialty:</strong> Chaos mixing & GD Studios track restructuring</li>
+          <li><strong>Specialty:</strong> Chaos mixing & BD Studios track restructuring</li>
         </ul>
 
         <button id="spec-toggle" class="toggle-btn" aria-expanded="false">
-          ▶ Show PC Specs
+          <span class="material-icons">play_arrow</span> Show PC Specs
         </button>
         <div id="pc-spec-panel" class="pc-spec-panel collapsed" aria-hidden="true">
           <label for="pc-spec-select">PC Specs</label>
@@ -54,8 +54,7 @@
             Storage: 250GB SSD + 500GB HDD + 150GB HDD<br>
             GPU: AMD Radeon HD 7900 Series
           </div>
-          <p>Yes I'm broke (Jk I work with what I got, I will get something better eventually)</p>
-        </div>
+         </div>
       </section>
       <section id="links">
         <h3>> LINKS</h3>
@@ -85,7 +84,7 @@
       toggle.setAttribute('aria-expanded', String(!expanded));
       panel.classList.toggle('collapsed');
       panel.setAttribute('aria-hidden', String(expanded));
-      toggle.textContent = expanded ? '▶ Show PC Specs' : '▼ Hide PC Specs';
+      toggle.innerHTML = expanded ? '<span class="material-icons">arrow_drop_up</span> Show PC Specs' : '<span class="material-icons">arrow_drop_down</span> Hide PC Specs';
     });
   </script>
 </body>

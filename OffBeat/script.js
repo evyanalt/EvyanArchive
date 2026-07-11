@@ -13,7 +13,7 @@ function formatTime(seconds) {
 }
 
 function updatePlayState() {
-  playPauseBtn.textContent = audio.paused ? '▶' : '❚❚';
+  playPauseBtn.innerHTML = audio.paused ? '<span class="material-icons">play_arrow</span>' : '<span class="material-icons">pause</span>';
   statusText.textContent = audio.paused ? 'Paused' : 'Playing';
 }
 
@@ -33,7 +33,7 @@ audio.addEventListener('ended', () => {
   seekBar.value = 0;
   currentTime.textContent = '0:00';
   statusText.textContent = 'Finished';
-  playPauseBtn.textContent = '▶';
+  playPauseBtn.innerHTML = '<span class="material-icons">play_arrow</span>';
 });
 
 playPauseBtn.addEventListener('click', async () => {

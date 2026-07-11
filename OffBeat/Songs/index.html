@@ -33,7 +33,7 @@
           <div>
             <span class="player-pill"><span class="material-icons">graphic_eq</span> Now playing</span>
             <h1 id="heroTitle">Zwarte man - Remix</h1>
-            <p id="heroSubtitle">Zwarte man • GD Studios</p>
+            <p id="heroSubtitle">Zwarte man • BD Studios</p>
           </div>
           <a class="player-link" href="https://www.bandlab.com/band/offbeat_o" target="_blank" rel="noopener noreferrer">BandLab</a>
         </div>
@@ -74,7 +74,7 @@
         </div>
 
         <div class="songs-actions">
-          <button id="songsPlayPause" class="player-btn" aria-label="Play or pause selected track">▶</button>
+          <button id="songsPlayPause" class="player-btn" aria-label="Play or pause selected track"><span class="material-icons">play_arrow</span></button>
           <input id="songsSeek" type="range" min="0" max="100" value="0" step="0.1">
           <span id="songsStatus" class="status-pill">Tap a track to start</span>
         </div>
@@ -82,60 +82,68 @@
 
       <section class="track-grid" aria-label="Track list by album">
         <article class="album-card">
-          <div class="album-art-wrap" aria-label="GD Originals cover art">
-            <img class="album-art" src="../Resources/covers/GD Originals.jpg" alt="GD Originals album cover">
+          <div class="album-art-wrap" aria-label="BD Originals cover art">
+            <img class="album-art" src="../Resources/covers/BD Originals.png" alt="BD Originals album cover">
           </div>
           <div class="album-header">
-            <h2>GD Originals</h2>
-            <span>2 tracks</span>
+            <h2>BD Originals</h2>
+            <span>3 tracks</span>
           </div>
           <ul>
-            <li class="track-item active" data-src="Chinese%20man.wav" data-title="Chinese man" data-album="GD Originals" data-artist="GD Studios">
-              <button class="track-play" type="button">▶</button>
+            <li class="track-item active" data-src="Chinese%20man.wav" data-title="Chinese man" data-album="BD Originals" data-artist="BD Studios">
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Chinese man</strong>
                 <span>Original track</span>
               </div>
               <span class="track-state">Now playing</span>
             </li>
-            <li class="track-item" data-src="Zwarte%20man.wav" data-title="Zwarte man" data-album="GD Originals" data-artist="GD Studios">
-              <button class="track-play" type="button">▶</button>
+            <li class="track-item" data-src="Zwarte%20man.wav" data-title="Zwarte man" data-album="BD Originals" data-artist="BD Studios">
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Zwarte man</strong>
                 <span>Original track</span>
               </div>
               <span class="track-state">Preview</span>
             </li>
+            <li class="track-item active" data-src="De%20Minderwaardigers.wav" data-title="De Minderwaardigers" data-album="BD Originals" data-artist="BD Studios">
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
+              <div class="track-meta">
+                <strong>De Minderwaardigers</strong>
+                <span>Original track</span>
+              </div>
+              <span class="track-state">Now playing</span>
+            </li>
           </ul>
         </article>
 
         <article class="album-card">
-          <div class="album-art-wrap" aria-label="GD Remixes cover art">
-            <img class="album-art" src="../Resources/covers/GD Remixes.png" alt="GD Remixes album cover">
+          <div class="album-art-wrap" aria-label="BD Remixes cover art">
+            <img class="album-art" src="../Resources/covers/BD Remixes.png" alt="BD Remixes album cover">
           </div>
           <div class="album-header">
-            <h2>GD Remixes</h2>
+            <h2>BD Remixes</h2>
             <span>3 tracks</span>
           </div>
           <ul>
-            <li class="track-item" data-src="Zwarte%20man%20-%20Remix.wav" data-title="Zwarte man - Remix" data-album="GD Remixes" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+            <li class="track-item" data-src="Zwarte%20man%20-%20Remix.wav" data-title="Zwarte man - Remix" data-album="BD Remixes" data-artist="Evyan">
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Zwarte man - Remix</strong>
                 <span>Remix release</span>
               </div>
               <span class="track-state">Preview</span>
             </li>
-            <li class="track-item" data-src="Zwarte%20man%20-%20Remix%202.wav" data-title="Zwarte man - Remix 2" data-album="GD Remixes" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+            <li class="track-item" data-src="Zwarte%20man%20-%20Remix%202.wav" data-title="Zwarte man - Remix 2" data-album="BD Remixes" data-artist="Evyan">
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Zwarte man - Remix 2</strong>
                 <span>Alternate remix</span>
               </div>
               <span class="track-state">Preview</span>
             </li>
-            <li class="track-item" data-src="Chinese%20man%20-%20Remix.wav" data-title="Chinese man - Remix" data-album="GD Remixes" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+            <li class="track-item" data-src="Chinese%20man%20-%20Remix.wav" data-title="Chinese man - Remix" data-album="BD Remixes" data-artist="Evyan">
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Chinese man - Remix</strong>
                 <span>Remix release</span>
@@ -155,7 +163,7 @@
           </div>
           <ul>
             <li class="track-item" data-src="1.%20echt%20een%20banger.wav" data-title="Echt een banger p1" data-album="Echte bangers" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Echt een banger p1</strong>
                 <span>Part 1</span>
@@ -163,7 +171,7 @@
               <span class="track-state">Preview</span>
             </li>
             <li class="track-item" data-src="2.%20Echt%20een%20banger%20p2.wav" data-title="Echt een banger p2" data-album="Echte bangers" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Echt een banger p2</strong>
                 <span>Part 2</span>
@@ -171,7 +179,7 @@
               <span class="track-state">Preview</span>
             </li>
             <li class="track-item" data-src="3.%20Echt%20een%20banger%20p3.wav" data-title="Echt een banger p3" data-album="Echte bangers" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Echt een banger p3</strong>
                 <span>Part 3</span>
@@ -179,7 +187,7 @@
               <span class="track-state">Preview</span>
             </li>
             <li class="track-item" data-src="4.%20Echt%20een%20banger%20p4.wav" data-title="Echt een banger p4" data-album="Echte bangers" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Echt een banger p4</strong>
                 <span>Part 4</span>
@@ -187,7 +195,7 @@
               <span class="track-state">Preview</span>
             </li>
             <li class="track-item" data-src="5.%20Echt%20een%20banger%20p5.wav" data-title="Echt een banger p5" data-album="Echte bangers" data-artist="Evyan">
-              <button class="track-play" type="button">▶</button>
+              <button class="track-play" type="button"><span class="material-icons">play</span></button>
               <div class="track-meta">
                 <strong>Echt een banger p5</strong>
                 <span>Part 5</span>
